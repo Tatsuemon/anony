@@ -8,6 +8,7 @@ import (
 )
 
 // URL is URL info
+// 値オブジェクト
 type URL struct {
 	ID   string `json:"id" db:"id"`
 	Name string `json:"name" db:"name"`
