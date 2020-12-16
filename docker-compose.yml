@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: docker/app/Dockerfile
+        tty: true
+        ports:
+            - "8080:8080"
+        env_file: .env
+        container_name: shortURL
+        depends_on:
+            - db
+        command: sh -c "chmod +x ./docker/app/wait-for-it.sh && ./docker/app/wait-for-it.sh db:3306;go run cmd/main.go;"
+    db:
+        build:
+            context: .
+            dockerfile: docker/mysql/Dockerfile
+        ports:
+            - 3306:3306
+        env_file: .env
+        container_name: shortURL_DB
+        volumes:
+            - ./docker/mysql/sql:/docker-entrypoint-initdb.d
+            - db-data:/var/lib/mysql
+volumes:
+    db-data:
