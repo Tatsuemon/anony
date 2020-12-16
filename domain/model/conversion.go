@@ -15,14 +15,11 @@ type Conversion struct {
 
 // NewConversion creates a new Conversion
 func NewConversion(shortURL, originalURL string) (*Conversion, error) {
-
-	validURL := govalidator.IsURL(shortURL)
-	if !validURL {
+	if validURL := govalidator.IsURL(shortURL); !validURL {
 		return nil, errors.New("shortURL is not valid url.")
 	}
 
-	validURL = govalidator.IsURL(originalURL)
-	if !validURL {
+	if validURL := govalidator.IsURL(originalURL); !validURL {
 		return nil, errors.New("originalURL is not valid url.")
 	}
 
