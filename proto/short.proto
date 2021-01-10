@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package short;
+option go_package="rpc";
+import "github.com/mwitkow/go-proto-validators/validator.proto";
+import "google/protobuf/timestamp.proto";
+
+
+service ShortURL {
+    rpc RegisterURL (RegisterRequest) returns (RegisterResponse);
+    rpc StopURL (StopRequest) returns (StopResponse);
+    rpc StartURL (StartRequest) returns (StartResponse);
+}
+
+message RegisterRequest {
+    string original = 1;
+}
+
+message RegisterResponse {
+    string original = 1;
+    string short = 2;
+    int32 status = 3;
+}
+
+message StartRequest {
+    string original = 1;
+}
+
+message StartResponse {
+    string original = 1;
+    string short = 2;
+    int32 status = 3;
+}
+
+message StopRequest {
+    string original = 1;
+}
+
+message StopResponse {
+    string original = 1;
+    string short = 2;
+    int32 status = 3;
+}
