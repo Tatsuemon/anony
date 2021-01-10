@@ -1,6 +1,6 @@
 FROM golang:1.15.2-alpine
 
-RUN apk --update --no-cache add git curl
+RUN apk --update --no-cache add git build-base curl
 
 WORKDIR /go/src/github.com/Tatsuemon/shortURL
 
@@ -13,6 +13,7 @@ RUN echo '[url "git@github.com:"]' > ~/.gitconfig \
 
 ADD . /go/src/github.com/Tatsuemon/shortURL
 
-RUN go get -u github.com/cosmtrek/air
+RUN go get -u github.com/cosmtrek/air && \
+    go get bitbucket.org/liamstask/goose/cmd/goose
 
 CMD air -c air.conf

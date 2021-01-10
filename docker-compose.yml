@@ -12,7 +12,7 @@ services:
     depends_on: 
       - db
     volumes:
-      - ./:/shortURL
+      - ./:/go/src/github.com/Tatsuemon/shortURL
   db:
     image: mysql:8.0
     container_name: shortURL-db
