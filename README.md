@@ -37,3 +37,7 @@ Go製のテストデータの準備ツールを使っています。([レポジ�
 `db/fixtures`配下にテストデータをymlの形で入れています。  
 `package interactor`で`prepareTestDB()`を呼ぶ事でテストデータがINSERTされます。  
 ※ testfixtureでは、テストデータの準備の前にDBをTRUNCATEするので、ローカルDBに対して使うのは要注意です。  
+
+
+### grpc
+参考: https://qiita.com/marnie_ms4/items/4582a1a0db363fe246f3
