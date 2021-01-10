@@ -1,9 +1,15 @@
-FROM golang:1.15.2
+FROM golang:1.15.2-alpine
+
+RUN apk --update --no-cache add git curl
 
 WORKDIR /go/src/github.com/Tatsuemon/shortURL
 
 ENV GO111MODULE=on
-ENV TZ=Asia/Tokyo
+ADD ./go.mod /go/src/github.com/Tatsuemon/shortURL/go.mod
+
+RUN echo '[url "git@github.com:"]' > ~/.gitconfig \
+  && echo "  insteadOf = https://github.com/" >> ~/.gitconfig \
+  && go mod download
 
 ADD . /go/src/github.com/Tatsuemon/shortURL
 
