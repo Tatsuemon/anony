@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"unicode/utf8"
 
 	"github.com/google/uuid"
 )
@@ -37,13 +38,26 @@ func NewUser(name string, email string, password string) (*User, error) {
 
 func EncryptedPassword(password string) (string, error) {
 	// TODO(Tatsuemon): 暗号化したパスワードを返す
+
 	return "encrypted password", nil
 }
 
+// ConfirmPassword is check password
 func ConfirmPassword(pass string, confirmPass string) (bool, error) {
-	// TODO(Tatsuemon): パスワードの確認とバリデーション
-	// これは, NewUserの前に行う
-	// ConfirmPassword -> EncryptedPassword -> NewUser
+	if pass == "" {
+		return false, fmt.Errorf("password is required")
+	}
+	if confirmPass == "" {
+		return false, fmt.Errorf("confirm_password is required")
+	}
+
+	if pass != confirmPass {
+		return false, fmt.Errorf("password needs to equeal to confirm_password")
+	}
+
+	if utf8.RuneCountInString(pass) < 6 {
+		return false, fmt.Errorf("password must be at least 6 characters")
+	}
 
 	return true, nil
 }
