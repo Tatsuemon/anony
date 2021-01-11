@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/app/Dockerfile
-    container_name: shortURL
+    container_name: anony
     # tty: true
     ports:
       - 8080:8080
@@ -12,10 +12,10 @@ services:
     depends_on: 
       - db
     volumes:
-      - ./:/go/src/github.com/Tatsuemon/shortURL
+      - ./:/go/src/github.com/Tatsuemon/anony
   db:
     image: mysql:8.0
-    container_name: shortURL-db
+    container_name: anony-db
     ports:
       - 3306:3306
     env_file: .env
