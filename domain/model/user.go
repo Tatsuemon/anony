@@ -5,6 +5,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // User is CLI User.
@@ -36,10 +38,18 @@ func NewUser(name string, email string, password string) (*User, error) {
 	}, nil
 }
 
-func EncryptedPassword(password string) (string, error) {
-	// TODO(Tatsuemon): 暗号化したパスワードを返す
+// MatchPassword returns whether it matches encrypted password
+func (u *User) MatchPassword(password string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(u.EncryptedPass), []byte(password)) == nil
+}
 
-	return "encrypted password", nil
+// EncryptPassword encrypt password
+func EncryptPassword(password string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to EncryptPassword")
+	}
+	return string(hash), nil
 }
 
 // ConfirmPassword is check password

@@ -35,7 +35,7 @@ func (u *UserHandler) CreateUser(ctx context.Context, in *rpc.CreateUserRequest)
 		return nil, errors.New("password is invalid")
 	}
 
-	encryptedPass, err := model.EncryptedPassword(password)
+	encryptedPass, err := model.EncryptPassword(password)
 	if err != nil {
 		return nil, errors.New("failed to encrypted password")
 	}

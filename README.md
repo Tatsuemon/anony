@@ -23,6 +23,9 @@
     name(or email) passwordでログイン処理
     トークンの発行 + ~/.anony/configに追加
 
+- [ ] ユーザーの認証処理
+    ユーザー登録, ログイン以外で使用するtokenの認証機能
+
 - [ ] ユーザーのログアウト + CLIの追加
     `$ anony logout`
 
