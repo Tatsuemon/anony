@@ -74,7 +74,7 @@ http://hoge.com/user_nameの変形/ランダム文字列
 
 ### マイグレーションファイルの作成
 ```
-$ goose -dir "db/migrations" create CreateSequence sql
+$ goose create CreateSequence sql
 ```
 
 ### マイグレーションの実行
@@ -88,3 +88,7 @@ $ docker-compose run app goose down
 
 ### grpc
 参考: https://qiita.com/marnie_ms4/items/4582a1a0db363fe246f3
+
+### sql 
+COLLATE(称号順序)
+utf8mb4_bin: UTF8の文字コード順(utf8mb4), バイナリコード順で全て区別する(bin)
