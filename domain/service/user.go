@@ -39,6 +39,7 @@ func (u *userService) ExistsName(name string) (bool, error) {
 	}
 	return true, nil
 }
+
 func (u *userService) ExistsEmail(email string) (bool, error) {
 	_, err := u.UserRepository.FindByEmail(email)
 	if err != nil {
