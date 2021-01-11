@@ -1,4 +1,4 @@
-module github.com/Tatsuemon/shortURL
+module github.com/Tatsuemon/anony
 
 go 1.15
 

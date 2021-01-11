@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"log"
 	
-	"github.com/Tatsuemon/shortURL/infrastructure/datastore"
-	"github.com/Tatsuemon/shortURL/config"
+	"github.com/Tatsuemon/anony/infrastructure/datastore"
+	"github.com/Tatsuemon/anony/config"
 )
 
 func main() {
