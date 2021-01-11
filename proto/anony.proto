@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package anony;
+option go_package="rpc";
+// import "github.com/mwitkow/go-proto-validators/validator.proto";
+import "google/protobuf/empty.proto";
+
+service UserService {
+    rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+    // rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
+    // rpc DeleteUser (DeleteUserRequest) returns (google.protobuf.Empty);
+}
+
+message UserBase {
+    string name = 1;
+    string email = 2;
+}
+
+message CreateUserRequest {
+    UserBase user = 1;
+    string password = 2;
+    string confirm_password = 3;
+}
+
+message CreateUserResponse {
+    UserBase user = 1;
+    string token = 2;
+}
+
+// message UpdateUserRequest {
+//     UserBase user = 1;
+//     string token = 2;
+// }
+
+// message UpdateUserResponse {
+//     UserBase user = 1;
+// }
+
+// message DeleteUserRequest {
+//     UserBase user = 1;
+//     string token = 2;
+// }
+
+
+// service ShortURL {
+//     rpc RegisterURL (RegisterRequest) returns (RegisterResponse);
+//     rpc StopURL (StopRequest) returns (StopResponse);
+//     rpc StartURL (StartRequest) returns (StartResponse);
+// }
+
+// message RegisterRequest {
+//     string original = 1;
+// }
+
+// message RegisterResponse {
+//     string original = 1;
+//     string short = 2;
+//     int32 status = 3;
+// }
+
+// message StartRequest {
+//     string original = 1;
+// }
+
+// message StartResponse {
+//     string original = 1;
+//     string short = 2;
+//     int32 status = 3;
+// }
+
+// message StopRequest {
+//     string original = 1;
+// }
+
+// message StopResponse {
+//     string original = 1;
+//     string short = 2;
+//     int32 status = 3;
+// }
