@@ -10,7 +10,7 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/kylelemons/go-gypsy v1.0.0 // indirect
 	github.com/mwitkow/go-proto-validators v0.3.2 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pkg/errors v0.9.1
 	github.com/pressly/goose v2.6.0+incompatible // indirect
 	github.com/ziutek/mymysql v1.5.4 // indirect
 	golang.org/x/net v0.0.0-20201224014010-6772e930b67b // indirect
