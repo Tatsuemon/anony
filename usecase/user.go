@@ -5,6 +5,7 @@ import (
 
 	"github.com/Tatsuemon/anony/domain/model"
 	"github.com/Tatsuemon/anony/domain/repository"
+	"github.com/Tatsuemon/anony/domain/service"
 	"github.com/Tatsuemon/anony/infrastructure/datastore"
 )
 
@@ -18,14 +19,21 @@ type UserUseCase interface {
 type userUseCase struct {
 	repository.UserRepository
 	transaction datastore.Transaction
+	service.UserService
 }
 
 // NewUserUseCase creates userUseCase.
-func NewUserUseCase(r repository.UserRepository, t datastore.Transaction) UserUseCase {
-	return &userUseCase{r, t}
+func NewUserUseCase(r repository.UserRepository, t datastore.Transaction, s service.UserService) UserUseCase {
+	return &userUseCase{r, t, s}
 }
 
 func (u *userUseCase) CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
+	exist, err := u.UserService.ExistsParams(user.ID, user.Name, user.Email)
+	if err != nil || exist {
+		// log.Print(err)
+		return nil, err
+	}
+
 	v, err := u.transaction.DoInTx(ctx, func(ctx context.Context) (interface{}, error) {
 		return u.UserRepository.Store(ctx, user)
 	})
@@ -33,11 +41,13 @@ func (u *userUseCase) CreateUser(ctx context.Context, user *model.User) (*model.
 		return nil, err
 	}
 
-	return v.(*model.User), err
+	return v.(*model.User), nil
 }
 
 func (u *userUseCase) UpdateUser(ctx context.Context, user *model.User) (*model.User, error) {
 	// user.IDに目的のuserのIDが入っていることを期待する
+
+	// TODO(Tatsuemon): nameとemailの重複を避ける
 	v, err := u.transaction.DoInTx(ctx, func(ctx context.Context) (interface{}, error) {
 		if _, err := u.UserRepository.FindByID(user.ID); err != nil {
 			return nil, err
@@ -48,7 +58,7 @@ func (u *userUseCase) UpdateUser(ctx context.Context, user *model.User) (*model.
 		return nil, err
 	}
 
-	return v.(*model.User), err
+	return v.(*model.User), nil
 }
 
 func (u *userUseCase) DeleteUser(ctx context.Context, id string) error {

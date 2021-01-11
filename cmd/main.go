@@ -4,6 +4,7 @@ import (
 	"log"
 	"net"
 
+	"github.com/Tatsuemon/anony/domain/service"
 	"github.com/Tatsuemon/anony/infrastructure/web/handler"
 	"github.com/Tatsuemon/anony/rpc"
 	"github.com/Tatsuemon/anony/usecase"
@@ -31,8 +32,9 @@ func main() {
 	transaction := datastore.NewTransaction(db.DB)
 
 	userRepository := datastore.NewUserRepository(db.DB)
+	userService := service.NewUserService(userRepository)
 
-	userUseCase := usecase.NewUserUseCase(userRepository, transaction)
+	userUseCase := usecase.NewUserUseCase(userRepository, transaction, userService)
 	userHandler := handler.NewUserHandler(userUseCase)
 
 	lis, err := net.Listen("tcp", address)
@@ -42,6 +44,7 @@ func main() {
 	reflection.Register(server)
 
 	if err := server.Serve(lis); err != nil {
+		log.Print("aaaaaa")
 		log.Fatalf("failed to serve: %s", err)
 	}
 

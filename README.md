@@ -5,6 +5,9 @@
 やること
 
 (CLI)
+
+rpcに処理のerror内容を渡す
+
 - [ ] ユーザーの登録 + CLIの追加
     `$ anony register`
     で, name, email, password(confirm password)を入力させる
@@ -12,6 +15,9 @@
     name, emailはunique, passwordとconfirm passwordが異なる場合は, passwordだけ入力しなおす
 
     検証して, 登録 + ログイン
+
+
+    下のやつ以外はほとんどできた
     トークンの発行 + ~/.anony/configに追加
 
 - [ ] ユーザーの更新
