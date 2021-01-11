@@ -1,43 +1,43 @@
-# shortURL
-短縮URLサービス
+# ANONY
+短縮(匿名)URLサービス
 
 
 やること
 
 (CLI)
 - [ ] ユーザーの登録 + CLIの追加
-    `$ shotty register`
+    `$ anony register`
     で, name, email, password(confirm password)を入力させる
 
     name, emailはunique, passwordとconfirm passwordが異なる場合は, passwordだけ入力しなおす
 
     検証して, 登録 + ログイン
-    トークンの発行 + ~/.shotty/configに追加
+    トークンの発行 + ~/.anony/configに追加
 
 - [ ] ユーザーのログイン + CLIの追加
-    `$ shotty login`
+    `$ anony login`
     name(or email) passwordでログイン処理
-    トークンの発行 + ~/.shotty/configに追加
+    トークンの発行 + ~/.anony/configに追加
 
 - [ ] ユーザーのログアウト + CLIの追加
-    `$ shotty logout`
+    `$ anony logout`
 
     トークンの削除, DBのAuths Tableのstatusの変更
 
 - [ ] 登録APIの作成
-    `$ shotty create [original url]`
+    `$ anony create [original url]`
     original urlをshort URLに変更
     DBに追加
 
     一度stopになったURLも作り直せる
 
 - [ ] 自分のURLの一覧取得　status表示も
-    `$ shotty list`
+    `$ anony list`
 
     optionで稼働しているもののみ取得
 
 - [ ] shortURLのはいし
-    `$ shotty drop [-u original_url] [-i url_id]`
+    `$ anony drop [-u original_url] [-i url_id]`
     statusの変更
 
 (WEBサーバー)
@@ -57,7 +57,7 @@ statusはそのトークンを使用できるかどうか
 
 登録は, 全てを入力
 
-CLIツールから利用する場合は, 最初のログイン完了後にトークンを~/.shotty/configに追加する
+CLIツールから利用する場合は, 最初のログイン完了後にトークンを~/.anony/configに追加する
 認証機能はそのトークンを使用して, ユーザーの特定
 
 
