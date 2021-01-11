@@ -10,6 +10,7 @@ import (
 	"github.com/Tatsuemon/anony/usecase"
 )
 
+// UserHandler implements rpc.UserSErviceServer interface
 type UserHandler struct {
 	usecase.UserUseCase
 }
@@ -18,8 +19,8 @@ type UserHandler struct {
 // 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 // 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 
-func NewUserHandler(u usecase.UserUseCase) UserHandler {
-	return UserHandler{u}
+func NewUserHandler(u usecase.UserUseCase) *UserHandler {
+	return &UserHandler{u}
 }
 
 func (u *UserHandler) CreateUser(ctx context.Context, in *rpc.CreateUserRequest) (*rpc.CreateUserResponse, error) {

@@ -14,6 +14,10 @@
     検証して, 登録 + ログイン
     トークンの発行 + ~/.anony/configに追加
 
+- [ ] ユーザーの更新
+
+- [ ] ユーザーの削除
+
 - [ ] ユーザーのログイン + CLIの追加
     `$ anony login`
     name(or email) passwordでログイン処理
@@ -92,3 +96,16 @@ $ docker-compose run app goose down
 ### sql 
 COLLATE(称号順序)
 utf8mb4_bin: UTF8の文字コード順(utf8mb4), バイナリコード順で全て区別する(bin)
+
+
+### 値レシーバとポインタレシーバ
+
+https://skatsuta.github.io/2015/12/29/value-receiver-pointer-receiver/
+
+
+handlerでgrpcのmethodを使用する
+
+
+### evansでデバッグ
+
+https://narinymous.hatenablog.com/entry/2018/04/14/043908
