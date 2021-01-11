@@ -19,10 +19,12 @@ type UserHandler struct {
 // 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 // 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 
+// NewUserHandler creates a new UserHandler
 func NewUserHandler(u usecase.UserUseCase) *UserHandler {
 	return &UserHandler{u}
 }
 
+// CreateUser creates a new user
 func (u *UserHandler) CreateUser(ctx context.Context, in *rpc.CreateUserRequest) (*rpc.CreateUserResponse, error) {
 	name := in.GetUser().GetName()
 	email := in.GetUser().GetEmail()
