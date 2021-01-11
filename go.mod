@@ -6,6 +6,7 @@ require (
 	bitbucket.org/liamstask/goose v0.0.0-20150115234039-8488cc47d90c // indirect
 	github.com/go-sql-driver/mysql v1.4.0
 	github.com/golang/protobuf v1.4.3 // indirect
+	github.com/google/uuid v1.1.2
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/kylelemons/go-gypsy v1.0.0 // indirect
 	github.com/mwitkow/go-proto-validators v0.3.2 // indirect
