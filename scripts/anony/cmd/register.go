@@ -102,10 +102,12 @@ func newRegisterCmd() *cobra.Command {
 				Password:        password,
 				ConfirmPassword: confirmPassword,
 			}
-
-			if err := registerUser(cmd, opts); err != nil {
+			err := registerUser(cmd, opts)
+			if err != nil {
+				fmt.Println()
 				return errors.Wrap(err, "failed to execute a command 'register'\n")
 			}
+
 			return nil
 		},
 	}
@@ -136,6 +138,7 @@ func registerUser(cmd *cobra.Command, opts *registerOpts) error {
 	}
 
 	res, err := cli.CreateUser(context.Background(), req)
+	// TODO(Tatsuemon): already existsはErrorではないため, Error表示しないようにする
 	if err != nil {
 		return errors.Wrap(err, "failed to cli.CreateUser\n")
 	}
