@@ -2,8 +2,10 @@ package handler
 
 import (
 	"context"
-	"errors"
 	"time"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/Tatsuemon/anony/domain/model"
 
@@ -33,28 +35,28 @@ func (u *UserHandler) CreateUser(ctx context.Context, in *rpc.CreateUserRequest)
 	confirmPassword := in.GetConfirmPassword()
 
 	if _, err := model.ConfirmPassword(password, confirmPassword); err != nil {
-		return nil, errors.New("password is invalid")
+		return nil, status.Errorf(codes.InvalidArgument, "password is invalid \n: %s", err)
 	}
 
 	encryptedPass, err := model.EncryptPassword(password)
 	if err != nil {
-		return nil, errors.New("failed to encrypted password")
+		return nil, status.Errorf(codes.InvalidArgument, "failed to encrypted password \n: %s", err)
 	}
 
 	user, err := model.NewUser(name, email, encryptedPass)
 	if err != nil {
-		return nil, errors.New("failed to NewUser")
+		return nil, status.Errorf(codes.InvalidArgument, "failed to NewUser \n: %s", err)
 	}
 
 	user, err = u.UserUseCase.CreateUser(ctx, user)
 	if err != nil {
-		return nil, errors.New("failed to create user")
+		return nil, status.Errorf(codes.InvalidArgument, "failed to create user \n: %s", err)
 	}
 
 	// JWT Tokenの作成
 	token, err := model.NewJWT(user.ID, user.Name, time.Now())
 	if err != nil {
-		return nil, errors.New("failed to Create JWT Token")
+		return nil, status.Errorf(codes.InvalidArgument, "failed to create JWT \n: %s", err)
 	}
 
 	res := &rpc.CreateUserResponse{
