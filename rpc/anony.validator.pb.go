@@ -35,3 +35,14 @@ func (this *CreateUserResponse) Validate() error {
 	}
 	return nil
 }
+func (this *LogInUserRequest) Validate() error {
+	return nil
+}
+func (this *LogInUserResponse) Validate() error {
+	if this.User != nil {
+		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.User); err != nil {
+			return github_com_mwitkow_go_proto_validators.FieldError("User", err)
+		}
+	}
+	return nil
+}
