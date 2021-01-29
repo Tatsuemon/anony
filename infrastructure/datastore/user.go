@@ -51,6 +51,36 @@ func (r userRepository) FindByEmail(email string) (*model.User, error) {
 	return &user, nil
 }
 
+func (r userRepository) FindByNameOrEmail(nameOrEmail string) (*model.User, error) {
+	user := model.User{}
+	params := map[string]interface{}{"nameOrEmail": nameOrEmail}
+	// TODO(Tatsuemon): ここではUserが一件しか取得できないことを前提としている
+
+	nstmt, err := r.conn.PrepareNamed("SELECT id, name, email, password FROM users WHERE name = :nameOrEmail OR email = :nameOrEmail")
+	if err != nil {
+		return nil, err
+	}
+	if err := nstmt.Get(&user, params); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (r userRepository) FindDuplicatedUsers(name, email string) ([]*model.User, error) {
+	users := make([]*model.User, 0)
+	params := map[string]interface{}{"name": name, "email": email}
+
+	nstmt, err := r.conn.PrepareNamed("SELECT DISTINCT id, name, email FROM users WHERE (name = :name) OR (name = :email) OR (email = :name) OR (email = :email)")
+	if err != nil {
+		return nil, err
+	}
+	if err := nstmt.Select(&users, params); err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
 func (r userRepository) Store(ctx context.Context, user *model.User) (*model.User, error) {
 	// *sqlx.Tx, *sqlx.DBの両方で使用できるようにinterfaceの指定
 	var tx interface {

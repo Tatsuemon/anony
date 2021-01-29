@@ -45,16 +45,11 @@ func newRegisterCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "register",
 		Short: "sign up",
-		Long: `A longer description that spans multiple lines and likely contains examples
-	and usage of using your command. For example:
-	
-	Cobra is a CLI library for Go that empowers applications.
-	This application is a tool to generate the needed files
-	to quickly create a Cobra application.`,
+		Long:  `create user account & log in Anony in order to use Annony CLI commands`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			s := bufio.NewScanner(os.Stdin)
 			var name, email, password, confirmPassword string
-			fmt.Println("You need to input your nickname and email.")
+			fmt.Println("\nHello!!!\nWelcome to Anony!!\n\n\nYou need to input your nickname and email.")
 			fmt.Print("[Account Name]: ")
 			s.Scan()
 			name = s.Text()
@@ -107,10 +102,12 @@ func newRegisterCmd() *cobra.Command {
 				Password:        password,
 				ConfirmPassword: confirmPassword,
 			}
-
-			if err := registerUser(cmd, opts); err != nil {
-				return errors.Wrap(err, "failed to execute a command 'register'")
+			err := registerUser(cmd, opts)
+			if err != nil {
+				fmt.Println()
+				return errors.Wrap(err, "failed to execute a command 'register'\n")
 			}
+
 			return nil
 		},
 	}
@@ -121,11 +118,11 @@ func registerUser(cmd *cobra.Command, opts *registerOpts) error {
 	conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
 
 	if err != nil {
-		return errors.Wrap(err, "failed to establish connection")
+		return errors.Wrap(err, "failed to establish connection\n")
 	}
 	defer func() {
 		if err := conn.Close(); err != nil {
-			fmt.Printf("failed to conn.Close(). %v", err)
+			fmt.Printf("failed to conn.Close(): \n%v", err)
 		}
 	}()
 
@@ -141,8 +138,9 @@ func registerUser(cmd *cobra.Command, opts *registerOpts) error {
 	}
 
 	res, err := cli.CreateUser(context.Background(), req)
+	// TODO(Tatsuemon): already existsはErrorではないため, Error表示しないようにする
 	if err != nil {
-		return errors.Wrap(err, "failed to cli.CreateUser")
+		return errors.Wrap(err, "failed to cli.CreateUser\n")
 	}
 
 	fmt.Println()

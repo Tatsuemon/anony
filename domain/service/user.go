@@ -1,6 +1,8 @@
 package service
 
 import (
+	"database/sql"
+
 	"github.com/Tatsuemon/anony/domain/repository"
 	"github.com/pkg/errors"
 )
@@ -13,6 +15,7 @@ type UserService interface {
 	ExistsID(id string) (bool, error)
 	ExistsName(name string) (bool, error)
 	ExistsEmail(email string) (bool, error)
+	ExistsDuplicatedUser(name, email string) (bool, error)
 }
 
 type userService struct {
@@ -25,25 +28,42 @@ func NewUserService(r repository.UserRepository) UserService {
 }
 
 func (u *userService) ExistsID(id string) (bool, error) {
-	_, err := u.UserRepository.FindByID(id)
+	user, err := u.UserRepository.FindByID(id)
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
 	if err != nil {
 		return false, errors.Wrap(err, "failed to userService.ExistsID")
 	}
-	return true, nil
+	return user != nil, nil
 }
 
 func (u *userService) ExistsName(name string) (bool, error) {
-	_, err := u.UserRepository.FindByName(name)
+	user, err := u.UserRepository.FindByName(name)
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
 	if err != nil {
 		return false, errors.Wrap(err, "failed to userService.ExistsName")
 	}
-	return true, nil
+	return user != nil, nil
 }
 
 func (u *userService) ExistsEmail(email string) (bool, error) {
-	_, err := u.UserRepository.FindByEmail(email)
+	user, err := u.UserRepository.FindByEmail(email)
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
 	if err != nil {
 		return false, errors.Wrap(err, "failed to userService.ExistsEmail")
 	}
-	return true, nil
+	return user != nil, nil
+}
+
+func (u *userService) ExistsDuplicatedUser(name, email string) (bool, error) {
+	users, err := u.UserRepository.FindDuplicatedUsers(name, email)
+	if err != nil {
+		return false, errors.Wrap(err, "failed to userService.ExistDuplicatedUser")
+	}
+	return len(users) != 0, nil
 }

@@ -9,7 +9,16 @@ service UserService {
     rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
     // rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
     // rpc DeleteUser (DeleteUserRequest) returns (google.protobuf.Empty);
+    rpc LogInUser (LogInUserRequest) returns (LogInUserResponse);
 }
+
+/* 
+
+    IDをResponseとして返さない -> IDはサーバー内のみで使用することとする
+    理由: クライアントでIDを持っていても意味がない(DBにアクセスするための識別子であるため)
+    name, emailをクライアントサイドで扱うことができれば十分
+    
+*/
 
 message UserBase {
     string name = 1;
@@ -23,6 +32,16 @@ message CreateUserRequest {
 }
 
 message CreateUserResponse {
+    UserBase user = 1;
+    string token = 2;
+}
+
+message LogInUserRequest {
+    string nameOrEmail = 1;
+    string password = 2;
+}
+
+message LogInUserResponse {
     UserBase user = 1;
     string token = 2;
 }

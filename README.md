@@ -5,6 +5,11 @@
 やること
 
 (CLI)
+
+rpcに処理のerror内容を渡す
+
+- Error モデルを作成して, Error Messageを全て格納
+
 - [ ] ユーザーの登録 + CLIの追加
     `$ anony register`
     で, name, email, password(confirm password)を入力させる
@@ -12,6 +17,9 @@
     name, emailはunique, passwordとconfirm passwordが異なる場合は, passwordだけ入力しなおす
 
     検証して, 登録 + ログイン
+
+
+    下のやつ以外はほとんどできた
     トークンの発行 + ~/.anony/configに追加
 
 - [ ] ユーザーの更新
@@ -112,3 +120,29 @@ handlerでgrpcのmethodを使用する
 ### evansでデバッグ
 
 https://narinymous.hatenablog.com/entry/2018/04/14/043908
+
+
+### JWT
+
+JWTの使い所
+認証によく使われます。
+
+クライアントは認証サーバに認証情報を渡し、トークンを請求する
+認証サーバは認証情報が正しいことを確認して、秘密鍵を使って署名された JWT (user_id と expiration_date を含む) を発行する
+クライアントはこの JWT を使って通常の API リクエストを行なう
+サーバは、秘密鍵を使って JWT を検証し、user_id を JSON から取り出し、処理を行なう
+JWTは改竄されていないことを確認できるため、改竄されていなければ認証サーバが署名したということなので、信用できる情報 (user_id) というわけです。
+
+JWTのユースケース
+OAuth 2.0のアクセストークン
+OpenID ConnectのIDトークン
+サービスをまたいだ認証機構
+メール認証のトークン
+JWTの構造
+JWTの文字列の中には、ピリオド.が2つ含まれている。そこを境目にして3つの文字列に分割できる
+1つ目: ヘッダ。どんなアルゴリズムで署名されているのか等のメタ情報を含む
+2つ目: ペイロード。JSON本体に相当する情報
+3つ目: 署名情報
+
+
+https://qiita.com/arenahito/items/d96e437e5e13ef800ee0

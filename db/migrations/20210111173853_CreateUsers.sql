@@ -7,8 +7,8 @@ CREATE TABLE `users` (
     `email` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT 'メールアドレス',
     `password` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT '暗号化されたパスワード',
     PRIMARY KEY (`id`),
-    INDEX name_index (`name`),
-    INDEX email_index (`email`)
+    UNIQUE name_index (`name`),
+    UNIQUE email_index (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 

@@ -9,6 +9,7 @@ CREATE TABLE `urls` (
     `user_id` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT 'ユーザーID',
     PRIMARY KEY (`id`),
     FOREIGN KEY fk_user_id (`user_id`) REFERENCES users (`id`),
+    UNIQUE user_id_original_index(`user_id`, `original`),
     INDEX original_index(`original`),
     INDEX short_index(`short`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
