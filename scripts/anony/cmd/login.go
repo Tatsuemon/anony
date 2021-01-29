@@ -25,6 +25,7 @@ import (
 	"github.com/Tatsuemon/anony/rpc"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh/terminal"
 	"google.golang.org/grpc"
 )
@@ -44,6 +45,7 @@ func newLogInCmd() *cobra.Command {
 		Short: "log in",
 		Long:  `log in to Anony service in order to use Anony CLI commands.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			// fmt.Println(config)
 			s := bufio.NewScanner(os.Stdin)
 			var nameOrEmail, password string
 			fmt.Print("[Account Name or Email]: ")
@@ -96,8 +98,14 @@ func logInUser(cmd *cobra.Command, opts *logInOpts) error {
 	}
 	fmt.Printf("\n\nHi %s!! You've successfully authenticated.\n", res.GetUser().GetName())
 	fmt.Println("Welcome to Anonny!!")
-	// TODO(Tatsuemon): tokenを.anony/configに入れる
-	fmt.Println(res.GetToken())
+
+	// Tokenの設定
+	file, err := os.OpenFile(viper.ConfigFileUsed(), os.O_RDWR|os.O_CREATE, 0666)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer file.Close()
+	fmt.Fprintf(file, "Token: \"%s\"\n", res.GetToken())
 
 	return nil
 }

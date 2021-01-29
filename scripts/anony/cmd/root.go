@@ -19,13 +19,19 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
+
+type Config struct {
+	Token string
+}
+
+var config Config
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -58,7 +64,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.anony.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.anony/config.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -78,10 +84,22 @@ func initConfig() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
+		configPath := home + "/.anony"
+		viper.AddConfigPath(configPath)
+		viper.SetConfigName("config")
 
-		// Search config in home directory with name ".anony" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".anony")
+		// TODO(Tatsuemon): ~/.anony/config.yamlの作成と追記
+		if f, err := os.Stat(configPath); os.IsNotExist(err) || !f.IsDir() {
+			if err := os.MkdirAll(configPath, 0777); err != nil {
+				fmt.Println(err)
+			}
+		}
+
+		file, err := os.OpenFile(configPath+"/config.yaml", os.O_WRONLY|os.O_CREATE, 0666)
+		if err != nil {
+			fmt.Println(err)
+		}
+		defer file.Close()
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
@@ -90,4 +108,11 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
+
+	if err := viper.Unmarshal(&config); err != nil {
+		fmt.Println(err)
+	}
+
+	// fmt.Println(viper.ConfigFileUsed())
+	// fmt.Println(config)
 }
