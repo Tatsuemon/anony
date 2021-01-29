@@ -4,6 +4,10 @@ import (
 	"log"
 	"net"
 
+	"github.com/Tatsuemon/anony/infrastructure/middleware"
+
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+
 	"github.com/Tatsuemon/anony/domain/service"
 	"github.com/Tatsuemon/anony/infrastructure/web/handler"
 	"github.com/Tatsuemon/anony/rpc"
@@ -38,7 +42,10 @@ func main() {
 	userHandler := handler.NewUserHandler(userUseCase)
 
 	lis, err := net.Listen("tcp", address)
-	server := grpc.NewServer() // ここでInterceptorとか入れる
+	server := grpc.NewServer(
+		grpc_middleware.WithUnaryServerChain(middleware.UnaryServerInterceptor(middleware.JWTAuth())),
+	) // ここでInterceptorとか入れる
+
 	rpc.RegisterUserServiceServer(server, userHandler)
 
 	reflection.Register(server)
@@ -49,23 +56,3 @@ func main() {
 	}
 
 }
-
-// func main() {
-// 	// port := 8080
-
-// 	db, err := datastore.NewMysqlDB(config.DSN())
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	defer func() {
-// 		err := db.Close()
-// 		if err != nil {
-// 			log.Fatal(err)
-// 		}
-// 	}()
-
-//     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-//         fmt.Fprintf(w, "Sample")
-//     })
-//     http.ListenAndServe(":8080", nil)
-// }
