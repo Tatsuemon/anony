@@ -26,6 +26,7 @@ import (
 	"github.com/Tatsuemon/anony/rpc"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh/terminal"
 	"google.golang.org/grpc"
 )
@@ -143,11 +144,16 @@ func registerUser(cmd *cobra.Command, opts *registerOpts) error {
 		return errors.Wrap(err, "failed to cli.CreateUser\n")
 	}
 
-	fmt.Println()
-	fmt.Println("User registration succeeded.")
+	fmt.Printf("\n\nHi %s!! You've successfully registerd.\n", res.GetUser().GetName())
+	fmt.Println("Welcome to Anonny!!")
 
-	// TODO(Tatsuemon): tokenを.anony/configに入れる
-	fmt.Println(res.GetToken())
+	// Tokenの設定
+	file, err := os.OpenFile(viper.ConfigFileUsed(), os.O_RDWR|os.O_CREATE, 0666)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer file.Close()
+	fmt.Fprintf(file, "Token: \"%s\"\n", res.GetToken())
 
 	return nil
 }
