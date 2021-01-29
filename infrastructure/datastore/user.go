@@ -51,12 +51,12 @@ func (r userRepository) FindByEmail(email string) (*model.User, error) {
 	return &user, nil
 }
 
-func (r userRepository) FindByNameOrEmailPass(nameOrEmail, password string) (*model.User, error) {
+func (r userRepository) FindByNameOrEmail(nameOrEmail string) (*model.User, error) {
 	user := model.User{}
-	params := map[string]interface{}{"nameOrEmail": nameOrEmail, "password": password}
+	params := map[string]interface{}{"nameOrEmail": nameOrEmail}
 	// TODO(Tatsuemon): ここではUserが一件しか取得できないことを前提としている
 
-	nstmt, err := r.conn.PrepareNamed("SELECT id, name, email FROM users WHERE (name = :nameOrEmail AND password = :password) OR (email = :nameOrEmail AND password = :password)")
+	nstmt, err := r.conn.PrepareNamed("SELECT id, name, email, password FROM users WHERE name = :nameOrEmail OR email = :nameOrEmail")
 	if err != nil {
 		return nil, err
 	}

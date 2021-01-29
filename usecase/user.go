@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/Tatsuemon/anony/domain/model"
 	"github.com/Tatsuemon/anony/domain/repository"
@@ -12,6 +14,8 @@ import (
 // UserUseCase is a usecase of user.
 type UserUseCase interface {
 	CreateUser(ctx context.Context, user *model.User) (*model.User, error)
+	CheckDuplicatedUser(ctx context.Context, user *model.User) (bool, error)
+	VerifyByNameOrEmailPass(ctx context.Context, nameOrEmail, password string) (*model.User, error)
 	UpdateUser(ctx context.Context, user *model.User) (*model.User, error)
 	DeleteUser(ctx context.Context, id string) error
 }
@@ -28,9 +32,8 @@ func NewUserUseCase(r repository.UserRepository, t datastore.Transaction, s serv
 }
 
 func (u *userUseCase) CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
-	exist, err := u.UserService.ExistsParams(user.ID, user.Name, user.Email)
-	if err != nil || exist {
-		// log.Print(err)
+	exists, err := u.UserService.ExistsID(user.ID)
+	if err != nil || exists {
 		return nil, err
 	}
 
@@ -42,6 +45,27 @@ func (u *userUseCase) CreateUser(ctx context.Context, user *model.User) (*model.
 	}
 
 	return v.(*model.User), nil
+}
+
+// true: 重複するものは存在しない
+func (u *userUseCase) CheckDuplicatedUser(ctx context.Context, user *model.User) (bool, error) {
+	exist, err := u.ExistsDuplicatedUser(user.Name, user.Email)
+	return !exist, err
+}
+
+func (u *userUseCase) VerifyByNameOrEmailPass(ctx context.Context, nameOrEmail, password string) (*model.User, error) {
+	user, err := u.UserRepository.FindByNameOrEmail(nameOrEmail)
+	if err == sql.ErrNoRows {
+		return nil, errors.New("Wrong name or email, password")
+	}
+	if err != nil {
+		return nil, errors.New("failed to userRepository.FindByNameOrEmailPass")
+	}
+	if ok := user.MatchPassword(password); !ok {
+		return nil, errors.New("Wrong name or email, password")
+	}
+
+	return user, nil
 }
 
 func (u *userUseCase) UpdateUser(ctx context.Context, user *model.User) (*model.User, error) {

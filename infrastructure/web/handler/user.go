@@ -13,7 +13,7 @@ import (
 	"github.com/Tatsuemon/anony/usecase"
 )
 
-// UserHandler implements rpc.UserSErviceServer interface
+// UserHandler implements rpc.UserServiceServer interface
 type UserHandler struct {
 	usecase.UserUseCase
 }
@@ -29,6 +29,10 @@ func NewUserHandler(u usecase.UserUseCase) *UserHandler {
 
 // CreateUser creates a new user
 func (u *UserHandler) CreateUser(ctx context.Context, in *rpc.CreateUserRequest) (*rpc.CreateUserResponse, error) {
+	// CLIで制御できる値
+	/*
+		- name, emailが重複している
+	*/
 	name := in.GetUser().GetName()
 	email := in.GetUser().GetEmail()
 	password := in.GetPassword()
@@ -48,6 +52,15 @@ func (u *UserHandler) CreateUser(ctx context.Context, in *rpc.CreateUserRequest)
 		return nil, status.Errorf(codes.InvalidArgument, "failed to NewUser \n: %s", err)
 	}
 
+	// TODO(Tatsuemon): 重複処理について
+	ok, err := u.UserUseCase.CheckDuplicatedUser(ctx, user)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "failed to check duplication user \n: %s", err)
+	}
+	if !ok {
+		return nil, status.Errorf(codes.AlreadyExists, "name or email is already exists")
+	}
+
 	user, err = u.UserUseCase.CreateUser(ctx, user)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "failed to create user \n: %s", err)
@@ -63,6 +76,32 @@ func (u *UserHandler) CreateUser(ctx context.Context, in *rpc.CreateUserRequest)
 		User: &rpc.UserBase{
 			Name:  name,
 			Email: email,
+		},
+		Token: token,
+	}
+	return res, nil
+}
+
+// LogInUser log in to anony using user infomation.
+func (u *UserHandler) LogInUser(ctx context.Context, in *rpc.LogInUserRequest) (*rpc.LogInUserResponse, error) {
+	nameOrEmail := in.GetNameOrEmail()
+	password := in.GetPassword()
+
+	user, err := u.UserUseCase.VerifyByNameOrEmailPass(ctx, nameOrEmail, password)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "failed to log in to anony \n:%s", err)
+	}
+
+	// JWT Tokenの作成
+	token, err := model.NewJWT(user.ID, user.Name, time.Now())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "failed to create JWT \n: %s", err)
+	}
+
+	res := &rpc.LogInUserResponse{
+		User: &rpc.UserBase{
+			Name:  user.Name,
+			Email: user.Email,
 		},
 		Token: token,
 	}

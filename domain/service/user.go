@@ -15,7 +15,7 @@ type UserService interface {
 	ExistsID(id string) (bool, error)
 	ExistsName(name string) (bool, error)
 	ExistsEmail(email string) (bool, error)
-	ExistsParams(id, name, email string) (bool, error)
+	ExistsDuplicatedUser(name, email string) (bool, error)
 }
 
 type userService struct {
@@ -60,29 +60,10 @@ func (u *userService) ExistsEmail(email string) (bool, error) {
 	return user != nil, nil
 }
 
-func (u *userService) ExistsParams(id, name, email string) (bool, error) {
-	exists, err := u.ExistsID(id)
+func (u *userService) ExistsDuplicatedUser(name, email string) (bool, error) {
+	users, err := u.UserRepository.FindDuplicatedUsers(name, email)
 	if err != nil {
-		return false, err
+		return false, errors.Wrap(err, "failed to userService.ExistDuplicatedUser")
 	}
-	if exists {
-		return true, errors.New("this user ID is already existed")
-	}
-
-	exists, err = u.ExistsName(name)
-	if err != nil {
-		return false, err
-	}
-	if exists {
-		return true, errors.New("this user name is already existed")
-	}
-
-	exists, err = u.ExistsEmail(email)
-	if err != nil {
-		return false, err
-	}
-	if exists {
-		return true, errors.New("this user email is already existed")
-	}
-	return false, nil
+	return len(users) != 0, nil
 }

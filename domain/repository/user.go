@@ -12,7 +12,7 @@ type UserRepository interface {
 	FindByID(id string) (*model.User, error)
 	FindByName(name string) (*model.User, error)
 	FindByEmail(email string) (*model.User, error)
-	FindByNameOrEmailPass(nameOrEmail, password string) (*model.User, error)
+	FindByNameOrEmail(nameOrEmail string) (*model.User, error)
 	FindDuplicatedUsers(name, email string) ([]*model.User, error)
 	Store(ctx context.Context, user *model.User) (*model.User, error)
 	Update(ctx context.Context, user *model.User) (*model.User, error)
