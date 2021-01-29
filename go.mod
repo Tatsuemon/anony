@@ -9,6 +9,7 @@ require (
 	github.com/go-sql-driver/mysql v1.4.0
 	github.com/golang/protobuf v1.4.3
 	github.com/google/uuid v1.1.2
+	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/kylelemons/go-gypsy v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.4 // indirect
