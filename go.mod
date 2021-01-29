@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	bitbucket.org/liamstask/goose v0.0.0-20150115234039-8488cc47d90c // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-sql-driver/mysql v1.4.0
 	github.com/golang/protobuf v1.4.3

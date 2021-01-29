@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/Tatsuemon/anony/domain/model"
 
@@ -50,8 +51,11 @@ func (u *UserHandler) CreateUser(ctx context.Context, in *rpc.CreateUserRequest)
 		return nil, errors.New("failed to create user")
 	}
 
-	// TODO(Tatsuemon): ログイン処理, 適当にtokenを作成と登録処理
-	token := "token1"
+	// JWT Tokenの作成
+	token, err := model.NewJWT(user.ID, user.Name, time.Now())
+	if err != nil {
+		return nil, errors.New("failed to Create JWT Token")
+	}
 
 	res := &rpc.CreateUserResponse{
 		User: &rpc.UserBase{
