@@ -46,6 +46,21 @@ message LogInUserResponse {
     string token = 2;
 }
 
+
+service AnonyService {
+    rpc CreateShortURL (CreateShortURLRequest) returns (CreateShortURLResponse);
+}
+
+message CreateShortURLRequest {
+    string original_url = 1;
+}
+
+message CreateShortURLResponse {
+    string original_url = 1;
+    string short_url = 2;
+    int64 status = 3;
+}
+
 // message UpdateUserRequest {
 //     UserBase user = 1;
 //     string token = 2;
