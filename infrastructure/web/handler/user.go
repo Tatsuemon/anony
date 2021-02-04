@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/Tatsuemon/anony/domain/model"
+	"github.com/google/uuid"
 
 	"github.com/Tatsuemon/anony/rpc"
 	"github.com/Tatsuemon/anony/usecase"
@@ -47,7 +48,8 @@ func (u *UserHandler) CreateUser(ctx context.Context, in *rpc.CreateUserRequest)
 		return nil, status.Errorf(codes.InvalidArgument, "failed to encrypted password \n: %s", err)
 	}
 
-	user, err := model.NewUser(name, email, encryptedPass)
+	id := uuid.New().String()
+	user, err := model.NewUser(id, name, email, encryptedPass)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "failed to NewUser \n: %s", err)
 	}

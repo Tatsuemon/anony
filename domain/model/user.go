@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"unicode/utf8"
 
-	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -18,24 +17,34 @@ type User struct {
 }
 
 // NewUser create a new user.
-func NewUser(name string, email string, password string) (*User, error) {
-	// ここでのバリデーションは入力された値に関するもの
-	// DBにアクセスして他との比較調査するものはserviceにおく
-	if name == "" {
-		return nil, fmt.Errorf("name is required")
-	}
-	if email == "" {
-		return nil, fmt.Errorf("email is required")
-	}
-	if password == "" {
-		return nil, fmt.Errorf("password is required")
-	}
+func NewUser(id string, name string, email string, password string) (*User, error) {
+	// uuid.New().String()
 	return &User{
-		ID:            uuid.New().String(),
+		ID:            id,
 		Name:          name,
 		Email:         email,
 		EncryptedPass: password,
 	}, nil
+}
+
+// ValidateUser validates User params
+func (u *User) ValidateUser() error {
+	if u.ID == "" {
+		return fmt.Errorf("id is required")
+	}
+	if u.Name == "" {
+		return fmt.Errorf("name is required")
+	}
+	if u.Email == "" {
+		return fmt.Errorf("email is required")
+	}
+	if u.EncryptedPass == "" {
+		return fmt.Errorf("password is required")
+	}
+	if utf8.RuneCountInString(u.EncryptedPass) < 6 && utf8.RuneCountInString(u.EncryptedPass) > 0 {
+		return fmt.Errorf("password must be at least 6 characters")
+	}
+	return nil
 }
 
 // MatchPassword returns whether it matches encrypted password

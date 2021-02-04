@@ -36,6 +36,9 @@ func (u *userUseCase) CreateUser(ctx context.Context, user *model.User) (*model.
 	if err != nil || exists {
 		return nil, err
 	}
+	if err := user.ValidateUser(); err != nil {
+		return nil, err
+	}
 
 	v, err := u.transaction.DoInTx(ctx, func(ctx context.Context) (interface{}, error) {
 		return u.UserRepository.Store(ctx, user)
@@ -43,7 +46,6 @@ func (u *userUseCase) CreateUser(ctx context.Context, user *model.User) (*model.
 	if err != nil {
 		return nil, err
 	}
-
 	return v.(*model.User), nil
 }
 
