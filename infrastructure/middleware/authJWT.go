@@ -12,7 +12,7 @@ type AuthFunc func(ctx context.Context, fullMethodName string) (context.Context,
 func JWTAuth() AuthFunc {
 	return func(ctx context.Context, fullMethodName string) (context.Context, error) {
 		if isSkipMethod(fullMethodName) {
-			return nil, nil
+			return ctx, nil
 		}
 		// TODO(Tatsuemon): ここで認可の処理を行う
 
