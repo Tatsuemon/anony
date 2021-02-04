@@ -48,14 +48,14 @@ message LogInUserResponse {
 
 
 service AnonyService {
-    rpc CreateShortURL (CreateShortURLRequest) returns (CreateShortURLResponse);
+    rpc CreateAnonyURL (CreateAnonyURLRequest) returns (CreateAnonyURLResponse);
 }
 
-message CreateShortURLRequest {
+message CreateAnonyURLRequest {
     string original_url = 1;
 }
 
-message CreateShortURLResponse {
+message CreateAnonyURLResponse {
     string original_url = 1;
     string short_url = 2;
     int64 status = 3;

@@ -46,9 +46,9 @@ func (this *LogInUserResponse) Validate() error {
 	}
 	return nil
 }
-func (this *CreateShortURLRequest) Validate() error {
+func (this *CreateAnonyURLRequest) Validate() error {
 	return nil
 }
-func (this *CreateShortURLResponse) Validate() error {
+func (this *CreateAnonyURLResponse) Validate() error {
 	return nil
 }
