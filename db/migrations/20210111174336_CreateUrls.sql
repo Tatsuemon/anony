@@ -7,6 +7,8 @@ CREATE TABLE `urls` (
     `short` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT '省略URL',
     `status` int NOT NULL COMMENT 'ステータス',
     `user_id` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT 'ユーザーID',
+    `created_at` DATETIME COLLATE utf8mb4_bin NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME COLLATE utf8mb4_bin NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     FOREIGN KEY fk_user_id (`user_id`) REFERENCES users (`id`),
     UNIQUE user_id_original_index(`user_id`, `original`),

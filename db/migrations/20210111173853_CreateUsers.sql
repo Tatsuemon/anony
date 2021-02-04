@@ -6,6 +6,8 @@ CREATE TABLE `users` (
     `name` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT 'ユーザー名',
     `email` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT 'メールアドレス',
     `password` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT '暗号化されたパスワード',
+    `created_at` DATETIME COLLATE utf8mb4_bin NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME COLLATE utf8mb4_bin NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     UNIQUE name_index (`name`),
     UNIQUE email_index (`email`)
