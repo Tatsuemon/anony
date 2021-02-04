@@ -6,17 +6,17 @@ import (
 	"github.com/Tatsuemon/anony/domain/repository"
 )
 
-// ConversionURLService is a service.
-type ConversionURLService interface {
+// AnonyURLService is a service.
+type AnonyURLService interface {
 	IsDuplicatedID(id string) error
-	IsExistedOriginalURLOfUser(original string, userID string) error
+	IsExistedOriginalInUser(original string, userID string) error
 }
 
-type conversionURLService struct {
-	repo repository.ConversionURLRepository
+type anonyURLService struct {
+	repo repository.AnonyURLRepository
 }
 
-func (c *conversionURLService) IsDuplicatedID(id string) error {
+func (c *anonyURLService) IsDuplicatedID(id string) error {
 	cURL, err := c.repo.FindByID(id) // TODO(Tatsuemon): sql.NoRowみたいなエラーが出ない方法で行う
 	if err != nil {
 		return err
@@ -28,8 +28,8 @@ func (c *conversionURLService) IsDuplicatedID(id string) error {
 	return nil
 }
 
-func (c *conversionURLService) IsExistedOriginalURLOfUser(original string, userID string) error {
-	cURL, err := c.repo.FindByOriginalURLOfUser(original, userID)
+func (c *anonyURLService) IsExistedOriginalInUser(original string, userID string) error {
+	cURL, err := c.repo.FindByOriginalInUser(original, userID)
 	if err != nil {
 		return err
 	}
