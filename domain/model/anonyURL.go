@@ -35,7 +35,7 @@ func (a AnonyURL) ValidateAnonyURL() error {
 		return fmt.Errorf("status is required")
 	}
 
-	if (a.Status < 1) && (a.Status > 2) {
+	if (a.Status < 1) || (a.Status > 2) {
 		return fmt.Errorf("status is out of range")
 	}
 	return nil
