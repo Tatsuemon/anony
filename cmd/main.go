@@ -35,18 +35,27 @@ func main() {
 
 	transaction := datastore.NewTransaction(db.DB)
 
+	// User
 	userRepository := datastore.NewUserRepository(db.DB)
 	userService := service.NewUserService(userRepository)
 
 	userUseCase := usecase.NewUserUseCase(userRepository, transaction, userService)
 	userHandler := handler.NewUserHandler(userUseCase)
 
+	// AnonyURL
+	anonyURLRepository := datastore.NewAnonyURLRepository(db.DB)
+	anonyURLService := service.NewAnonyURLService(anonyURLRepository)
+
+	anonyURLUseCase := usecase.NewAnonyURLUseCase(anonyURLRepository, transaction, anonyURLService)
+	anonayURLHandler := handler.NewAnonyURLHandler(anonyURLUseCase)
+
 	lis, err := net.Listen("tcp", address)
 	server := grpc.NewServer(
-		grpc_middleware.WithUnaryServerChain(middleware.UnaryServerInterceptor(middleware.JWTAuth())),
+		grpc_middleware.WithUnaryServerChain(middleware.UnaryServerInterceptor(middleware.JWTAuth(userService))),
 	) // ここでInterceptorとか入れる
 
 	rpc.RegisterUserServiceServer(server, userHandler)
+	rpc.RegisterAnonyServiceServer(server, anonayURLHandler)
 
 	reflection.Register(server)
 

@@ -1,6 +1,8 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"os"
 	"time"
 
@@ -95,4 +97,23 @@ func ParseJWT(signed string) (*Auth, error) {
 		Exp:      int64(exp),
 	}, nil
 
+}
+
+type contextKey string
+
+const userIDContextKey contextKey = "user_id"
+
+// SetUserIDInContext set user_id in context
+func SetUserIDInContext(parents context.Context, t string) context.Context {
+	return context.WithValue(parents, userIDContextKey, t)
+}
+
+// GetUserIDInContext get user_id in context
+func GetUserIDInContext(ctx context.Context) (string, error) {
+	v := ctx.Value(userIDContextKey)
+	token, ok := v.(string)
+	if !ok {
+		return "", fmt.Errorf("token not found")
+	}
+	return token, nil
 }

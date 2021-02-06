@@ -8,9 +8,6 @@ package rpc
 
 import (
 	context "context"
-	reflect "reflect"
-	sync "sync"
-
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -18,6 +15,8 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/emptypb"
+	reflect "reflect"
+	sync "sync"
 )
 
 const (
@@ -314,6 +313,116 @@ func (x *LogInUserResponse) GetToken() string {
 	return ""
 }
 
+type CreateAnonyURLRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OriginalUrl string `protobuf:"bytes,1,opt,name=original_url,json=originalUrl,proto3" json:"original_url,omitempty"`
+}
+
+func (x *CreateAnonyURLRequest) Reset() {
+	*x = CreateAnonyURLRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_anony_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateAnonyURLRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateAnonyURLRequest) ProtoMessage() {}
+
+func (x *CreateAnonyURLRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_anony_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateAnonyURLRequest.ProtoReflect.Descriptor instead.
+func (*CreateAnonyURLRequest) Descriptor() ([]byte, []int) {
+	return file_anony_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CreateAnonyURLRequest) GetOriginalUrl() string {
+	if x != nil {
+		return x.OriginalUrl
+	}
+	return ""
+}
+
+type CreateAnonyURLResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OriginalUrl string `protobuf:"bytes,1,opt,name=original_url,json=originalUrl,proto3" json:"original_url,omitempty"`
+	ShortUrl    string `protobuf:"bytes,2,opt,name=short_url,json=shortUrl,proto3" json:"short_url,omitempty"`
+	Status      int64  `protobuf:"varint,3,opt,name=status,proto3" json:"status,omitempty"`
+}
+
+func (x *CreateAnonyURLResponse) Reset() {
+	*x = CreateAnonyURLResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_anony_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateAnonyURLResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateAnonyURLResponse) ProtoMessage() {}
+
+func (x *CreateAnonyURLResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_anony_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateAnonyURLResponse.ProtoReflect.Descriptor instead.
+func (*CreateAnonyURLResponse) Descriptor() ([]byte, []int) {
+	return file_anony_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *CreateAnonyURLResponse) GetOriginalUrl() string {
+	if x != nil {
+		return x.OriginalUrl
+	}
+	return ""
+}
+
+func (x *CreateAnonyURLResponse) GetShortUrl() string {
+	if x != nil {
+		return x.ShortUrl
+	}
+	return ""
+}
+
+func (x *CreateAnonyURLResponse) GetStatus() int64 {
+	if x != nil {
+		return x.Status
+	}
+	return 0
+}
+
 var File_anony_proto protoreflect.FileDescriptor
 
 var file_anony_proto_rawDesc = []byte{
@@ -346,17 +455,34 @@ var file_anony_proto_rawDesc = []byte{
 	0x12, 0x23, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f,
 	0x2e, 0x61, 0x6e, 0x6f, 0x6e, 0x79, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x42, 0x61, 0x73, 0x65, 0x52,
 	0x04, 0x75, 0x73, 0x65, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x32, 0x90, 0x01, 0x0a, 0x0b,
-	0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x41, 0x0a, 0x0a, 0x43,
-	0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x12, 0x18, 0x2e, 0x61, 0x6e, 0x6f, 0x6e,
-	0x79, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x61, 0x6e, 0x6f, 0x6e, 0x79, 0x2e, 0x43, 0x72, 0x65, 0x61,
-	0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3e,
-	0x0a, 0x09, 0x4c, 0x6f, 0x67, 0x49, 0x6e, 0x55, 0x73, 0x65, 0x72, 0x12, 0x17, 0x2e, 0x61, 0x6e,
-	0x6f, 0x6e, 0x79, 0x2e, 0x4c, 0x6f, 0x67, 0x49, 0x6e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x61, 0x6e, 0x6f, 0x6e, 0x79, 0x2e, 0x4c, 0x6f, 0x67,
-	0x49, 0x6e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x05,
-	0x5a, 0x03, 0x72, 0x70, 0x63, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x3a, 0x0a, 0x15, 0x43,
+	0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x6e, 0x6f, 0x6e, 0x79, 0x55, 0x52, 0x4c, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x21, 0x0a, 0x0c, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x61, 0x6c,
+	0x5f, 0x75, 0x72, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x6f, 0x72, 0x69, 0x67,
+	0x69, 0x6e, 0x61, 0x6c, 0x55, 0x72, 0x6c, 0x22, 0x70, 0x0a, 0x16, 0x43, 0x72, 0x65, 0x61, 0x74,
+	0x65, 0x41, 0x6e, 0x6f, 0x6e, 0x79, 0x55, 0x52, 0x4c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x21, 0x0a, 0x0c, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x61, 0x6c, 0x5f, 0x75, 0x72,
+	0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x61,
+	0x6c, 0x55, 0x72, 0x6c, 0x12, 0x1b, 0x0a, 0x09, 0x73, 0x68, 0x6f, 0x72, 0x74, 0x5f, 0x75, 0x72,
+	0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x73, 0x68, 0x6f, 0x72, 0x74, 0x55, 0x72,
+	0x6c, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x32, 0x90, 0x01, 0x0a, 0x0b, 0x55, 0x73,
+	0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x41, 0x0a, 0x0a, 0x43, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x12, 0x18, 0x2e, 0x61, 0x6e, 0x6f, 0x6e, 0x79, 0x2e,
+	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x19, 0x2e, 0x61, 0x6e, 0x6f, 0x6e, 0x79, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3e, 0x0a, 0x09,
+	0x4c, 0x6f, 0x67, 0x49, 0x6e, 0x55, 0x73, 0x65, 0x72, 0x12, 0x17, 0x2e, 0x61, 0x6e, 0x6f, 0x6e,
+	0x79, 0x2e, 0x4c, 0x6f, 0x67, 0x49, 0x6e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x18, 0x2e, 0x61, 0x6e, 0x6f, 0x6e, 0x79, 0x2e, 0x4c, 0x6f, 0x67, 0x49, 0x6e,
+	0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0x5d, 0x0a, 0x0c,
+	0x41, 0x6e, 0x6f, 0x6e, 0x79, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x4d, 0x0a, 0x0e,
+	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x6e, 0x6f, 0x6e, 0x79, 0x55, 0x52, 0x4c, 0x12, 0x1c,
+	0x2e, 0x61, 0x6e, 0x6f, 0x6e, 0x79, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x6e, 0x6f,
+	0x6e, 0x79, 0x55, 0x52, 0x4c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1d, 0x2e, 0x61,
+	0x6e, 0x6f, 0x6e, 0x79, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x6e, 0x6f, 0x6e, 0x79,
+	0x55, 0x52, 0x4c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x05, 0x5a, 0x03, 0x72,
+	0x70, 0x63, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -371,13 +497,15 @@ func file_anony_proto_rawDescGZIP() []byte {
 	return file_anony_proto_rawDescData
 }
 
-var file_anony_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_anony_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_anony_proto_goTypes = []interface{}{
-	(*UserBase)(nil),           // 0: anony.UserBase
-	(*CreateUserRequest)(nil),  // 1: anony.CreateUserRequest
-	(*CreateUserResponse)(nil), // 2: anony.CreateUserResponse
-	(*LogInUserRequest)(nil),   // 3: anony.LogInUserRequest
-	(*LogInUserResponse)(nil),  // 4: anony.LogInUserResponse
+	(*UserBase)(nil),               // 0: anony.UserBase
+	(*CreateUserRequest)(nil),      // 1: anony.CreateUserRequest
+	(*CreateUserResponse)(nil),     // 2: anony.CreateUserResponse
+	(*LogInUserRequest)(nil),       // 3: anony.LogInUserRequest
+	(*LogInUserResponse)(nil),      // 4: anony.LogInUserResponse
+	(*CreateAnonyURLRequest)(nil),  // 5: anony.CreateAnonyURLRequest
+	(*CreateAnonyURLResponse)(nil), // 6: anony.CreateAnonyURLResponse
 }
 var file_anony_proto_depIdxs = []int32{
 	0, // 0: anony.CreateUserRequest.user:type_name -> anony.UserBase
@@ -385,10 +513,12 @@ var file_anony_proto_depIdxs = []int32{
 	0, // 2: anony.LogInUserResponse.user:type_name -> anony.UserBase
 	1, // 3: anony.UserService.CreateUser:input_type -> anony.CreateUserRequest
 	3, // 4: anony.UserService.LogInUser:input_type -> anony.LogInUserRequest
-	2, // 5: anony.UserService.CreateUser:output_type -> anony.CreateUserResponse
-	4, // 6: anony.UserService.LogInUser:output_type -> anony.LogInUserResponse
-	5, // [5:7] is the sub-list for method output_type
-	3, // [3:5] is the sub-list for method input_type
+	5, // 5: anony.AnonyService.CreateAnonyURL:input_type -> anony.CreateAnonyURLRequest
+	2, // 6: anony.UserService.CreateUser:output_type -> anony.CreateUserResponse
+	4, // 7: anony.UserService.LogInUser:output_type -> anony.LogInUserResponse
+	6, // 8: anony.AnonyService.CreateAnonyURL:output_type -> anony.CreateAnonyURLResponse
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
 	3, // [3:3] is the sub-list for extension extendee
 	0, // [0:3] is the sub-list for field type_name
@@ -460,6 +590,30 @@ func file_anony_proto_init() {
 				return nil
 			}
 		}
+		file_anony_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateAnonyURLRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_anony_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateAnonyURLResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -467,9 +621,9 @@ func file_anony_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_anony_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_anony_proto_goTypes,
 		DependencyIndexes: file_anony_proto_depIdxs,
@@ -595,6 +749,78 @@ var _UserService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LogInUser",
 			Handler:    _UserService_LogInUser_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "anony.proto",
+}
+
+// AnonyServiceClient is the client API for AnonyService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type AnonyServiceClient interface {
+	CreateAnonyURL(ctx context.Context, in *CreateAnonyURLRequest, opts ...grpc.CallOption) (*CreateAnonyURLResponse, error)
+}
+
+type anonyServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewAnonyServiceClient(cc grpc.ClientConnInterface) AnonyServiceClient {
+	return &anonyServiceClient{cc}
+}
+
+func (c *anonyServiceClient) CreateAnonyURL(ctx context.Context, in *CreateAnonyURLRequest, opts ...grpc.CallOption) (*CreateAnonyURLResponse, error) {
+	out := new(CreateAnonyURLResponse)
+	err := c.cc.Invoke(ctx, "/anony.AnonyService/CreateAnonyURL", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AnonyServiceServer is the server API for AnonyService service.
+type AnonyServiceServer interface {
+	CreateAnonyURL(context.Context, *CreateAnonyURLRequest) (*CreateAnonyURLResponse, error)
+}
+
+// UnimplementedAnonyServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedAnonyServiceServer struct {
+}
+
+func (*UnimplementedAnonyServiceServer) CreateAnonyURL(context.Context, *CreateAnonyURLRequest) (*CreateAnonyURLResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAnonyURL not implemented")
+}
+
+func RegisterAnonyServiceServer(s *grpc.Server, srv AnonyServiceServer) {
+	s.RegisterService(&_AnonyService_serviceDesc, srv)
+}
+
+func _AnonyService_CreateAnonyURL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAnonyURLRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnonyServiceServer).CreateAnonyURL(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/anony.AnonyService/CreateAnonyURL",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnonyServiceServer).CreateAnonyURL(ctx, req.(*CreateAnonyURLRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _AnonyService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "anony.AnonyService",
+	HandlerType: (*AnonyServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateAnonyURL",
+			Handler:    _AnonyService_CreateAnonyURL_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

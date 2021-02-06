@@ -146,3 +146,7 @@ JWTの文字列の中には、ピリオド.が2つ含まれている。そこを
 
 
 https://qiita.com/arenahito/items/d96e437e5e13ef800ee0
+
+
+CQRS
+https://qiita.com/sanoyo/items/2cf5a8cae5928f37000d
