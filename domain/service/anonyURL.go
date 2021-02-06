@@ -16,12 +16,17 @@ type anonyURLService struct {
 	repo repository.AnonyURLRepository
 }
 
+// NewAnonyURLService create a new service.
+func NewAnonyURLService(r repository.AnonyURLRepository) AnonyURLService {
+	return &anonyURLService{r}
+}
+
 func (c *anonyURLService) IsDuplicatedID(id string) error {
 	cURL, err := c.repo.FindByID(id) // TODO(Tatsuemon): sql.NoRowみたいなエラーが出ない方法で行う
 	if err != nil {
 		return err
 	}
-	if cURL != nil {
+	if len(cURL) != 0 {
 		err = errors.New("id is duplicated")
 		return err
 	}
@@ -33,7 +38,7 @@ func (c *anonyURLService) IsExistedOriginalInUser(original string, userID string
 	if err != nil {
 		return err
 	}
-	if cURL != nil {
+	if len(cURL) != 0 {
 		err = errors.New("You have already created this original url")
 		return err
 	}

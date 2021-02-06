@@ -23,8 +23,10 @@ func NewAnonyURLHandler(u usecase.AnonyURLUseCase) *AnonyURLHandler {
 func (a *AnonyURLHandler) CreateAnonyURL(ctx context.Context, in *rpc.CreateAnonyURLRequest) (*rpc.CreateAnonyURLResponse, error) {
 	ori := in.GetOriginalUrl()
 
-	// TODO(Tatsuemon): JWTからuser_ID取得
-	userID := "test"
+	userID, err := model.GetUserIDInContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	// TODO(Tatsuemon): shortURLのロジック
 	su := "http://shorttttttt/"

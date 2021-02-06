@@ -42,7 +42,7 @@ func NewAnonyURLRepository(conn *sqlx.DB) repository.AnonyURLRepository {
 
 func (r anonyURLRepository) FindByID(id string) ([]*model.AnonyURL, error) {
 	es := []*anonyURLReadEntity{}
-	if err := r.conn.Select(&es, "SELECT id, original, short, status, user_id, created_at, updated_at FROM urls"); err != nil {
+	if err := r.conn.Select(&es, "SELECT id, original, short, status, user_id, created_at, updated_at FROM urls WHERE id = ?", id); err != nil {
 		return nil, err
 	}
 	cURLs := make([]*model.AnonyURL, 0, len(es))
