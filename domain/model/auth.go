@@ -19,8 +19,6 @@ type Auth struct {
 	Exp      int64
 }
 
-// TODO(Tatsuemon): tokenの種類, JWTでやってみる
-
 // NewJWT is
 func NewJWT(userID, userName string, now time.Time) (string, error) {
 	// JWT Tokenの作成場所
