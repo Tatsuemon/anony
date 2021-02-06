@@ -18,7 +18,6 @@ type User struct {
 
 // NewUser create a new user.
 func NewUser(id string, name string, email string, password string) (*User, error) {
-	// uuid.New().String()
 	return &User{
 		ID:            id,
 		Name:          name,
