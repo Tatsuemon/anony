@@ -6,8 +6,6 @@ import (
 	"testing"
 
 	"github.com/Tatsuemon/anony/domain/model"
-
-	"github.com/Tatsuemon/anony/domain/repository"
 )
 
 type userRepositoryMock struct {
@@ -52,15 +50,15 @@ func (m userRepositoryMock) Delete(ctx context.Context, user *model.User) error 
 
 func TestNewUserService(t *testing.T) {
 	type mocks struct {
-		FakeFindAll             func() ([]*model.User, error)
-		FakeFindByID            func(id string) (*model.User, error)
-		FakeFindByName          func(name string) (*model.User, error)
-		FakeFindByEmail         func(email string) (*model.User, error)
-		FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
-		FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-		FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
-		FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
-		FakeDelete              func(ctx context.Context, user *model.User) error
+		// FakeFindAll             func() ([]*model.User, error)
+		FakeFindByID func(id string) (*model.User, error)
+		// FakeFindByName          func(name string) (*model.User, error)
+		// FakeFindByEmail         func(email string) (*model.User, error)
+		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
+		// FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
+		// FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeDelete              func(ctx context.Context, user *model.User) error
 	}
 	tests := []struct {
 		name  string
@@ -96,15 +94,15 @@ func TestNewUserService(t *testing.T) {
 
 func Test_userService_ExistsID(t *testing.T) {
 	type mocks struct {
-		FakeFindAll             func() ([]*model.User, error)
-		FakeFindByID            func(id string) (*model.User, error)
-		FakeFindByName          func(name string) (*model.User, error)
-		FakeFindByEmail         func(email string) (*model.User, error)
-		FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
-		FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-		FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
-		FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
-		FakeDelete              func(ctx context.Context, user *model.User) error
+		// FakeFindAll             func() ([]*model.User, error)
+		FakeFindByID func(id string) (*model.User, error)
+		// FakeFindByName          func(name string) (*model.User, error)
+		// FakeFindByEmail         func(email string) (*model.User, error)
+		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
+		// FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
+		// FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeDelete              func(ctx context.Context, user *model.User) error
 	}
 	type args struct {
 		id string
@@ -187,15 +185,15 @@ func Test_userService_ExistsID(t *testing.T) {
 
 func Test_userService_ExistsName(t *testing.T) {
 	type mocks struct {
-		FakeFindAll             func() ([]*model.User, error)
-		FakeFindByID            func(id string) (*model.User, error)
-		FakeFindByName          func(name string) (*model.User, error)
-		FakeFindByEmail         func(email string) (*model.User, error)
-		FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
-		FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-		FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
-		FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
-		FakeDelete              func(ctx context.Context, user *model.User) error
+		// FakeFindAll             func() ([]*model.User, error)
+		// FakeFindByID            func(id string) (*model.User, error)
+		FakeFindByName func(name string) (*model.User, error)
+		// FakeFindByEmail         func(email string) (*model.User, error)
+		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
+		// FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
+		// FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeDelete              func(ctx context.Context, user *model.User) error
 	}
 	type args struct {
 		name string
@@ -278,15 +276,15 @@ func Test_userService_ExistsName(t *testing.T) {
 
 func Test_userService_ExistsEmail(t *testing.T) {
 	type mocks struct {
-		FakeFindAll             func() ([]*model.User, error)
-		FakeFindByID            func(id string) (*model.User, error)
-		FakeFindByName          func(name string) (*model.User, error)
-		FakeFindByEmail         func(email string) (*model.User, error)
-		FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
-		FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-		FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
-		FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
-		FakeDelete              func(ctx context.Context, user *model.User) error
+		// FakeFindAll             func() ([]*model.User, error)
+		// FakeFindByID            func(id string) (*model.User, error)
+		// FakeFindByName          func(name string) (*model.User, error)
+		FakeFindByEmail func(email string) (*model.User, error)
+		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
+		// FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
+		// FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeDelete              func(ctx context.Context, user *model.User) error
 	}
 	type args struct {
 		email string
@@ -326,8 +324,8 @@ func Test_userService_ExistsEmail(t *testing.T) {
 					return nil, fmt.Errorf("error")
 				},
 			},
-			want:    true,
-			wantErr: false,
+			want:    false,
+			wantErr: true,
 		},
 		{
 			name: "ERROR: userRepository.FindByEmailでErrorを返す場合",
@@ -368,8 +366,16 @@ func Test_userService_ExistsEmail(t *testing.T) {
 }
 
 func Test_userService_ExistsDuplicatedUser(t *testing.T) {
-	type fields struct {
-		UserRepository repository.UserRepository
+	type mocks struct {
+		// FakeFindAll             func() ([]*model.User, error)
+		// FakeFindByID            func(id string) (*model.User, error)
+		// FakeFindByName          func(name string) (*model.User, error)
+		// FakeFindByEmail         func(email string) (*model.User, error)
+		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
+		FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
+		// FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeDelete              func(ctx context.Context, user *model.User) error
 	}
 	type args struct {
 		name  string
@@ -377,17 +383,67 @@ func Test_userService_ExistsDuplicatedUser(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
+		mocks   mocks
 		want    bool
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "NORMAL: userRepository.FindByDuplicatdUsersでUserの配列を返す場合",
+			args: args{
+				name:  "name",
+				email: "email",
+			},
+			mocks: mocks{
+				FakeFindDuplicatedUsers: func(name, email string) ([]*model.User, error) {
+					return []*model.User{
+						{
+							ID:            "id",
+							Name:          "name",
+							Email:         "email",
+							EncryptedPass: "password",
+						},
+					}, nil
+				},
+			},
+			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "NORMAL: userRepository.FindByDuplicatdUsersでUserの配列が空の場合",
+			args: args{
+				name:  "name",
+				email: "email",
+			},
+			mocks: mocks{
+				FakeFindDuplicatedUsers: func(name, email string) ([]*model.User, error) {
+					return []*model.User{}, nil
+				},
+			},
+			want:    false,
+			wantErr: false,
+		},
+		{
+			name: "ERROR: userRepository.FindByDuplicatdUsersでErrorを返す場合",
+			args: args{
+				name:  "name",
+				email: "email",
+			},
+			mocks: mocks{
+				FakeFindDuplicatedUsers: func(name, email string) ([]*model.User, error) {
+					return nil, fmt.Errorf("error")
+				},
+			},
+			want:    false,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			u := &userService{
-				UserRepository: tt.fields.UserRepository,
+				UserRepository: userRepositoryMock{
+					FakeFindDuplicatedUsers: tt.mocks.FakeFindDuplicatedUsers,
+				},
 			}
 			got, err := u.ExistsDuplicatedUser(tt.args.name, tt.args.email)
 			if (err != nil) != tt.wantErr {
