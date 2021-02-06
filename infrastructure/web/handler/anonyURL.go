@@ -28,14 +28,15 @@ func (a *AnonyURLHandler) CreateAnonyURL(ctx context.Context, in *rpc.CreateAnon
 		return nil, err
 	}
 
-	// TODO(Tatsuemon): shortURLのロジック
-	su := "http://shorttttttt/"
-
+	su, err := a.usecase.CreateAnonyURL(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
 	an, err := model.NewAnonyURL(uuid.New().String(), ori, su, 1)
 	if err != nil {
 		return nil, err
 	}
-	_, err = a.usecase.CreateAnonyURL(ctx, an, userID)
+	_, err = a.usecase.SaveAnonyURL(ctx, an, userID)
 	if err != nil {
 		return nil, err
 	}

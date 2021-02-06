@@ -7,7 +7,7 @@ type AnonyURL struct {
 	ID       string `json:"id" db:"id"`
 	Original string `json:"original" db:"original"`
 	Short    string `json:"short" db:"short"`
-	Status   int64  `json:"status" db:"status"` // 1: 待機中, 2: 有効, 3: 無効
+	Status   int64  `json:"status" db:"status"` // 1: 有効, 2: 無効
 }
 
 // NewAnonyURL create a new AnonyURL
@@ -35,7 +35,7 @@ func (a AnonyURL) ValidateAnonyURL() error {
 		return fmt.Errorf("status is required")
 	}
 
-	if (a.Status < 1) && (a.Status > 3) {
+	if (a.Status < 1) && (a.Status > 2) {
 		return fmt.Errorf("status is out of range")
 	}
 	return nil
