@@ -30,6 +30,9 @@ func (r userRepository) FindAll() ([]*model.User, error) {
 func (r userRepository) FindByID(id string) (*model.User, error) {
 	user := model.User{}
 	if err := r.conn.Get(&user, "Select id, name, email FROM users WHERE id = ?", id); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &user, nil
@@ -38,6 +41,9 @@ func (r userRepository) FindByID(id string) (*model.User, error) {
 func (r userRepository) FindByName(name string) (*model.User, error) {
 	user := model.User{}
 	if err := r.conn.Get(&user, "Select id, name, email FROM users WHERE name = ?", name); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &user, nil
@@ -46,6 +52,9 @@ func (r userRepository) FindByName(name string) (*model.User, error) {
 func (r userRepository) FindByEmail(email string) (*model.User, error) {
 	user := model.User{}
 	if err := r.conn.Get(&user, "Select id, name, email FROM users WHERE email = ?", email); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &user, nil

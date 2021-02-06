@@ -1,8 +1,6 @@
 package service
 
 import (
-	"database/sql"
-
 	"github.com/Tatsuemon/anony/domain/repository"
 	"github.com/pkg/errors"
 )
@@ -29,9 +27,6 @@ func NewUserService(r repository.UserRepository) UserService {
 
 func (u *userService) ExistsID(id string) (bool, error) {
 	user, err := u.UserRepository.FindByID(id)
-	if err == sql.ErrNoRows {
-		return false, nil
-	}
 	if err != nil {
 		return false, errors.Wrap(err, "failed to userService.ExistsID")
 	}
@@ -40,9 +35,6 @@ func (u *userService) ExistsID(id string) (bool, error) {
 
 func (u *userService) ExistsName(name string) (bool, error) {
 	user, err := u.UserRepository.FindByName(name)
-	if err == sql.ErrNoRows {
-		return false, nil
-	}
 	if err != nil {
 		return false, errors.Wrap(err, "failed to userService.ExistsName")
 	}
@@ -51,9 +43,6 @@ func (u *userService) ExistsName(name string) (bool, error) {
 
 func (u *userService) ExistsEmail(email string) (bool, error) {
 	user, err := u.UserRepository.FindByEmail(email)
-	if err == sql.ErrNoRows {
-		return false, nil
-	}
 	if err != nil {
 		return false, errors.Wrap(err, "failed to userService.ExistsEmail")
 	}
