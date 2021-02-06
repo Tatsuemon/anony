@@ -100,7 +100,7 @@ func logInUser(cmd *cobra.Command, opts *logInOpts) error {
 	fmt.Println("Welcome to Anonny!!")
 
 	// Tokenの設定
-	file, err := os.OpenFile(viper.ConfigFileUsed(), os.O_RDWR|os.O_CREATE, 0666)
+	file, err := os.OpenFile(viper.ConfigFileUsed(), os.O_RDWR|os.O_TRUNC|os.O_CREATE, 0666)
 	if err != nil {
 		fmt.Println(err)
 	}
