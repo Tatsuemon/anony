@@ -225,7 +225,7 @@ func Test_userRepository_FindDuplicatedUsers(t *testing.T) {
 	}
 }
 
-func Test_userRepository_Store(t *testing.T) {
+func Test_userRepository_Save(t *testing.T) {
 	type fields struct {
 		conn *sqlx.DB
 	}
@@ -247,13 +247,13 @@ func Test_userRepository_Store(t *testing.T) {
 			r := userRepository{
 				conn: tt.fields.conn,
 			}
-			got, err := r.Store(tt.args.ctx, tt.args.user)
+			got, err := r.Save(tt.args.ctx, tt.args.user)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("userRepository.Store() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("userRepository.Save() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("userRepository.Store() = %v, want %v", got, tt.want)
+				t.Errorf("userRepository.Save() = %v, want %v", got, tt.want)
 			}
 		})
 	}

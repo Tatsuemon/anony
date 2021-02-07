@@ -90,7 +90,7 @@ func (r userRepository) FindDuplicatedUsers(name, email string) ([]*model.User, 
 	return users, nil
 }
 
-func (r userRepository) Store(ctx context.Context, user *model.User) (*model.User, error) {
+func (r userRepository) Save(ctx context.Context, user *model.User) (*model.User, error) {
 	// *sqlx.Tx, *sqlx.DBの両方で使用できるようにinterfaceの指定
 	var tx interface {
 		Prepare(query string) (*sql.Stmt, error)
@@ -105,7 +105,7 @@ func (r userRepository) Store(ctx context.Context, user *model.User) (*model.Use
 	stmt, err := tx.Prepare("INSERT INTO `users` (id, name, email, password) VALUES(?, ?, ?, ?)")
 
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to datastore.userRepository.Store()")
+		return nil, errors.Wrap(err, "failed to datastore.userRepository.Save()")
 	}
 
 	defer func() {
@@ -117,7 +117,7 @@ func (r userRepository) Store(ctx context.Context, user *model.User) (*model.Use
 
 	_, err = stmt.Exec(user.ID, user.Name, user.Email, user.EncryptedPass)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to datastore.userRepository.Store()")
+		return nil, errors.Wrap(err, "failed to datastore.userRepository.Save()")
 	}
 
 	return user, nil

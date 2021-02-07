@@ -15,7 +15,7 @@ type userRepositoryMock struct {
 	FakeFindByEmail         func(email string) (*model.User, error)
 	FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
 	FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-	FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
+	FakeSave                func(ctx context.Context, user *model.User) (*model.User, error)
 	FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
 	FakeDelete              func(ctx context.Context, user *model.User) error
 }
@@ -38,8 +38,8 @@ func (m userRepositoryMock) FindByNameOrEmail(namrOrEmail string) (*model.User, 
 func (m userRepositoryMock) FindDuplicatedUsers(name, email string) ([]*model.User, error) {
 	return m.FakeFindDuplicatedUsers(name, email)
 }
-func (m userRepositoryMock) Store(ctx context.Context, user *model.User) (*model.User, error) {
-	return m.FakeStore(ctx, user)
+func (m userRepositoryMock) Save(ctx context.Context, user *model.User) (*model.User, error) {
+	return m.FakeSave(ctx, user)
 }
 func (m userRepositoryMock) Update(ctx context.Context, user *model.User) (*model.User, error) {
 	return m.FakeUpdate(ctx, user)
@@ -56,7 +56,7 @@ func TestNewUserService(t *testing.T) {
 		// FakeFindByEmail         func(email string) (*model.User, error)
 		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
 		// FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-		// FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeSave               func(ctx context.Context, user *model.User) (*model.User, error)
 		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
 		// FakeDelete              func(ctx context.Context, user *model.User) error
 	}
@@ -100,7 +100,7 @@ func Test_userService_ExistsID(t *testing.T) {
 		// FakeFindByEmail         func(email string) (*model.User, error)
 		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
 		// FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-		// FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeSave               func(ctx context.Context, user *model.User) (*model.User, error)
 		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
 		// FakeDelete              func(ctx context.Context, user *model.User) error
 	}
@@ -191,7 +191,7 @@ func Test_userService_ExistsName(t *testing.T) {
 		// FakeFindByEmail         func(email string) (*model.User, error)
 		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
 		// FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-		// FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeSave               func(ctx context.Context, user *model.User) (*model.User, error)
 		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
 		// FakeDelete              func(ctx context.Context, user *model.User) error
 	}
@@ -282,7 +282,7 @@ func Test_userService_ExistsEmail(t *testing.T) {
 		FakeFindByEmail func(email string) (*model.User, error)
 		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
 		// FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-		// FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeSave               func(ctx context.Context, user *model.User) (*model.User, error)
 		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
 		// FakeDelete              func(ctx context.Context, user *model.User) error
 	}
@@ -373,7 +373,7 @@ func Test_userService_ExistsDuplicatedUser(t *testing.T) {
 		// FakeFindByEmail         func(email string) (*model.User, error)
 		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
 		FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-		// FakeStore               func(ctx context.Context, user *model.User) (*model.User, error)
+		// FakeSave               func(ctx context.Context, user *model.User) (*model.User, error)
 		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
 		// FakeDelete              func(ctx context.Context, user *model.User) error
 	}
