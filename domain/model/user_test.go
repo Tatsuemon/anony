@@ -13,10 +13,9 @@ func TestNewUser(t *testing.T) {
 		password string
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    *User
-		wantErr bool
+		name string
+		args args
+		want *User
 	}{
 		{
 			name: "NORMAL: 正常にUserを作成できる",
@@ -32,16 +31,11 @@ func TestNewUser(t *testing.T) {
 				Email:         "email",
 				EncryptedPass: "password",
 			},
-			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewUser(tt.args.id, tt.args.name, tt.args.email, tt.args.password)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("NewUser() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			got := NewUser(tt.args.id, tt.args.name, tt.args.email, tt.args.password)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewUser() = %v, want %v", got, tt.want)
 			}

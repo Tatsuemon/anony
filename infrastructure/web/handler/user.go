@@ -49,10 +49,7 @@ func (u *UserHandler) CreateUser(ctx context.Context, in *rpc.CreateUserRequest)
 	}
 
 	id := uuid.New().String()
-	user, err := model.NewUser(id, name, email, encryptedPass)
-	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "failed to NewUser \n: %s", err)
-	}
+	user := model.NewUser(id, name, email, encryptedPass)
 
 	// TODO(Tatsuemon): 重複処理について
 	ok, err := u.UserUseCase.CheckDuplicatedUser(ctx, user)

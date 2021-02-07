@@ -17,13 +17,13 @@ type User struct {
 }
 
 // NewUser create a new user.
-func NewUser(id string, name string, email string, password string) (*User, error) {
+func NewUser(id string, name string, email string, password string) *User {
 	return &User{
 		ID:            id,
 		Name:          name,
 		Email:         email,
 		EncryptedPass: password,
-	}, nil
+	}
 }
 
 // ValidateUser validates User params
