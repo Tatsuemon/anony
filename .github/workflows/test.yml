@@ -6,16 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: prepare db for test
+      run: make prepare-test-db
     - name: go test
-      run: make prepare-test-db-ci && make test
-      env: 
-        MYSQL_ROOT_PASSWORD: ${{secrets.TEST_MYSQL_ROOT_PASSWORD}}
-        MYSQL_USER: ${{secrets.TEST_MYSQL_USER}}
-        MYSQL_PASSWORD: ${{secrets.TEST_MYSQL_PASSWORD}}
-        MYSQL_HOST: ${{secrets.TEST_MYSQL_HOST}}
-        MYSQL_PORT: ${{secrets.TEST_MYSQL_PORT}}
-        MYSQL_DATABASE: ${{secrets.TEST_MYSQL_DATABASE}}
-        JWT_ISS: ${{secrets.TEST_JWT_ISS}}
-        JWT_SIGNING_KEY: ${{secrets.TEST_JWT_SIGNING_KEY}}
-        TZ: ${{secrets.TZ}}
-        SERVER_HOST: ${{secrets.TEST_SERVER_HOST}}
+      run: make test

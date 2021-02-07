@@ -16,10 +16,3 @@ prepare-test-db:
 
 test:
 	docker-compose -f docker-compose.test.yml run app-test go test -v ./...
-
-# CI
-prepare-test-db-ci:
-	docker-compose -f docker-compose.ci.yml run app-test goose up
-
-test-ci:
-	docker-compose -f docker-compose.ci.yml run app-test go test -v ./...

@@ -9,7 +9,7 @@ func TestDSN(t *testing.T) {
 	}{
 		{
 			name: "NORMAL: 正常な値",
-			want: "test-user:test-pass@tcp(db-test:3306)/AnonyURL-test?parseTime=true&collation=utf8mb4_bin",
+			want: "test-user:test-pass@tcp(db-test:3306)/anonyURL-test?parseTime=true&collation=utf8mb4_bin",
 		},
 	}
 	for _, tt := range tests {

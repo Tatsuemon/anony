@@ -7,17 +7,32 @@ services:
     container_name: anony-test
     ports:
       - 8080:8080
-    env_file: .env.test
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: test-user
+      MYSQL_PASSWORD: test-pass
+      MYSQL_HOST: db-test
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: anonyURL-test
+      JWT_ISS: test-jwt-iss
+      JWT_SIGNING_KEY: test-jwt-signing-key
+      TZ: Asia/Tokyo
+      SERVER_HOST: http://localhost-test
     depends_on: 
       - db-test
-    volumes:
-      - ./:/go/src/github.com/Tatsuemon/anony
   db-test:
     image: mysql:8.0
     container_name: anony-db-test
     ports:
       - 3306:3306
-    env_file: .env.test
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: test-user
+      MYSQL_PASSWORD: test-pass
+      MYSQL_HOST: db-test
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: anonyURL-test
+      TZ: Asia/Tokyo
     volumes:
       - ./docker/mysql/sql:/docker-entrypoint-initdb.d
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf

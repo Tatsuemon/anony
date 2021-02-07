@@ -28,7 +28,7 @@ func TestNewJWT(t *testing.T) {
 				userID:   "id",
 				userName: "name",
 			},
-			want:    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOi02MjEzNTUxMDQwMCwiaWF0IjotNjIxMzU1OTY4MDAsImlzcyI6IlRhdHN1ZW1vbi10ZXN0IiwibmFtZSI6Im5hbWUiLCJzdWIiOiJpZCJ9.qzyoCwFWeqtJZ1wxGckTZruDTHG9lwcMn8TnPZEH0xQ",
+			want:    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOi02MjEzNTUxMDQwMCwiaWF0IjotNjIxMzU1OTY4MDAsImlzcyI6InRlc3Qtand0LWlzcyIsIm5hbWUiOiJuYW1lIiwic3ViIjoiaWQifQ.XYpn5-yVCnvQQl39zMoPHdJyPCret9X-iiOEfAopK8g",
 			wantErr: false,
 		},
 	}
