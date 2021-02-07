@@ -50,6 +50,7 @@ message LogInUserResponse {
 service AnonyService {
     rpc CreateAnonyURL (CreateAnonyURLRequest) returns (CreateAnonyURLResponse);
     // rpc UpdateAnonyURLStatus (UpdateAnonyURLStatusRequest) returns (UpdateAnonyURLStatusResponse);
+    rpc ListAnonyURLs (ListAnonyURLsRequest) returns (ListAnonyURLsResponse);
 }
 
 message CreateAnonyURLRequest {
@@ -61,6 +62,21 @@ message CreateAnonyURLResponse {
     string original_url = 1;
     string short_url = 2;
     bool is_active = 3;
+}
+
+message AnonyURL {
+    string original_url = 1;
+    string short_url = 2;
+    bool is_active = 3;
+}
+
+message ListAnonyURLsRequest {
+    bool inActive = 1;
+    bool all = 2;
+}
+
+message ListAnonyURLsResponse {
+    repeated AnonyURL anony_urls = 1;
 }
 
 // message UpdateAnonyURLStatusRequest {
