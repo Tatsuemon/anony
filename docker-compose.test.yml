@@ -5,6 +5,7 @@ services:
       context: .
       dockerfile: ./docker/app/Dockerfile
     container_name: anony-test
+    tty: true
     ports:
       - 8080:8080
     environment:
@@ -20,6 +21,7 @@ services:
       SERVER_HOST: http://localhost-test
     depends_on: 
       - db-test
+    entrypoint: "dockerize -timeout 60s -wait tcp://db-test:3306; /bin/sh"
   db-test:
     image: mysql:8.0
     container_name: anony-db-test
