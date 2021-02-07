@@ -19,10 +19,6 @@ type UserHandler struct {
 	usecase.UserUseCase
 }
 
-// CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
-// 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
-// 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-
 // NewUserHandler creates a new UserHandler
 func NewUserHandler(u usecase.UserUseCase) *UserHandler {
 	return &UserHandler{u}
