@@ -53,6 +53,32 @@ func (r anonyURLRepository) FindByID(id string) (*model.AnonyURL, error) {
 	return &res, nil
 }
 
+func (r anonyURLRepository) FindByUserID(userID string) ([]*model.AnonyURL, error) {
+	aes := []anonyURLReadEntity{}
+	if err := r.conn.Select(&aes, "SELECT id, original, short, status, user_id, created_at, updated_at FROM urls WHERE user_id = ?", userID); err != nil {
+		return nil, err
+	}
+	res := make([]*model.AnonyURL, len(aes))
+	for i, v := range aes {
+		tmp := mapAnonyURLReadEntityToAnonyURL(v)
+		res[i] = &tmp
+	}
+	return res, nil
+}
+
+func (r anonyURLRepository) FindByUserIDWithStatus(userID string, status int64) ([]*model.AnonyURL, error) {
+	aes := []anonyURLReadEntity{}
+	if err := r.conn.Select(&aes, "SELECT id, original, short, status, user_id, created_at, updated_at FROM urls WHERE user_id = ? and status = ?", userID, status); err != nil {
+		return nil, err
+	}
+	res := make([]*model.AnonyURL, len(aes))
+	for i, v := range aes {
+		tmp := mapAnonyURLReadEntityToAnonyURL(v)
+		res[i] = &tmp
+	}
+	return res, nil
+}
+
 func (r anonyURLRepository) FindByOriginalInUser(original string, userID string) (*model.AnonyURL, error) {
 	ae := anonyURLReadEntity{}
 	if err := r.conn.Get(&ae, "SELECT id, original, short, status, user_id, created_at, updated_at FROM urls WHERE original = ? AND user_id = ?", original, userID); err != nil {

@@ -10,7 +10,7 @@ rpcに処理のerror内容を渡す
 
 - Error モデルを作成して, Error Messageを全て格納
 
-- [ ] ユーザーの登録 + CLIの追加
+- [x] ユーザーの登録 + CLIの追加
     `$ anony register`
     で, name, email, password(confirm password)を入力させる
 
@@ -25,13 +25,13 @@ rpcに処理のerror内容を渡す
 
 - [ ] ユーザーの削除
 
-- [ ] ユーザーのログイン + CLIの追加
+- [x] ユーザーのログイン + CLIの追加
     `$ anony login`
     name(or email) passwordでログイン処理
     ~トークンの発行 + ~/.anony/configに追加~
     JWTはsqliteに保存するようにする
 
-- [ ] ユーザーの認証処理
+- [x] ユーザーの認証処理
     ユーザー登録, ログイン以外で使用するtokenの認証機能
 
 - [ ] ユーザーのログアウト + CLIの追加
@@ -39,14 +39,14 @@ rpcに処理のerror内容を渡す
 
     Client側でJWTを削除
 
-- [ ] 登録APIの作成
+- [x] 登録APIの作成
     `$ anony create [original url]`
     original urlをshort URLに変更
     DBに追加
 
     一度stopになったURLも作り直せる
 
-- [ ] 自分のURLの一覧取得　status表示も
+- [x] 自分のURLの一覧取得　status表示も
     `$ anony list`
 
     optionで稼働しているもののみ取得

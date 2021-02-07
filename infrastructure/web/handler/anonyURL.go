@@ -53,3 +53,37 @@ func (a *AnonyURLHandler) CreateAnonyURL(ctx context.Context, in *rpc.CreateAnon
 
 	return res, nil
 }
+
+// ListAnonyURLs lists user's Anony URLs
+func (a *AnonyURLHandler) ListAnonyURLs(ctx context.Context, in *rpc.ListAnonyURLsRequest) (*rpc.ListAnonyURLsResponse, error) {
+	userID, err := model.GetUserIDInContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	inActive := in.GetInActive()
+	all := in.GetAll()
+	var status int64
+	if all {
+		status = 0
+	} else if inActive {
+		status = 2
+	} else {
+		status = 1
+	}
+
+	ans, err := a.usecase.ListAnonyURLs(ctx, userID, status)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &rpc.ListAnonyURLsResponse{}
+	res.AnonyUrls = make([]*rpc.AnonyURL, len(ans))
+	for i, v := range ans {
+		res.AnonyUrls[i] = &rpc.AnonyURL{
+			OriginalUrl: v.Original,
+			ShortUrl:    v.Short,
+			IsActive:    v.Status == 1,
+		}
+	}
+	return res, nil
+}

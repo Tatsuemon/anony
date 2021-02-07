@@ -17,6 +17,7 @@ import (
 type AnonyURLUseCase interface {
 	CreateAnonyURL(ctx context.Context, userID string) (string, error)
 	SaveAnonyURL(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error)
+	ListAnonyURLs(ctx context.Context, userID string, q int64) ([]*model.AnonyURL, error)
 }
 
 type anonyURLUseCase struct {
@@ -82,4 +83,19 @@ func (u *anonyURLUseCase) CreateAnonyURL(ctx context.Context, userID string) (st
 		path += string(letters[int(v)%len(letters)])
 	}
 	return host + "/" + path, nil
+}
+
+func (u *anonyURLUseCase) ListAnonyURLs(ctx context.Context, userID string, q int64) ([]*model.AnonyURL, error) {
+	// q=0 -> all
+	// q=1 -> active
+	// q=2 -> inactive
+	if q == 0 {
+		return u.repo.FindByUserID(userID)
+	} else if q == 1 {
+		return u.repo.FindByUserIDWithStatus(userID, 1)
+	} else if q == 2 {
+		return u.repo.FindByUserIDWithStatus(userID, 2)
+	} else {
+		return nil, fmt.Errorf("out of range")
+	}
 }
