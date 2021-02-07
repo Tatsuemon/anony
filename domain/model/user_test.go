@@ -249,6 +249,15 @@ func TestConfirmPassword(t *testing.T) {
 			want:    false,
 			wantErr: true,
 		},
+		{
+			name: "ERROR: 確認用パスワードが空文字の場合",
+			args: args{
+				pass:        "pass",
+				confirmPass: "",
+			},
+			want:    false,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
