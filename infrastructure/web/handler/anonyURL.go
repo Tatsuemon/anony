@@ -32,10 +32,7 @@ func (a *AnonyURLHandler) CreateAnonyURL(ctx context.Context, in *rpc.CreateAnon
 	if err != nil {
 		return nil, err
 	}
-	an, err := model.NewAnonyURL(uuid.New().String(), ori, su, 1)
-	if err != nil {
-		return nil, err
-	}
+	an := model.NewAnonyURL(uuid.New().String(), ori, su, 1)
 	_, err = a.usecase.SaveAnonyURL(ctx, an, userID)
 	if err != nil {
 		return nil, err

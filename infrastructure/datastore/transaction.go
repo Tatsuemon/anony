@@ -48,7 +48,7 @@ func (t *tx) DoInTx(ctx context.Context, f func(ctx context.Context) (interface{
 	return v, nil
 }
 
-// context.Contextからトランザクションを取得する関数
+// GetTx is context.Contextからトランザクションを取得する関数
 func GetTx(ctx context.Context) (*sqlx.Tx, bool) {
 	tx, ok := ctx.Value(&txKey).(*sqlx.Tx)
 	return tx, ok

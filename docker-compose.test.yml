@@ -1,0 +1,39 @@
+version: "3"
+services:
+  app-test:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    container_name: anony-test
+    ports:
+      - 8888:8080
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: test-user
+      MYSQL_PASSWORD: test-pass
+      MYSQL_HOST: db-test
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: anony-test
+      JWT_ISS: test-jwt-iss
+      JWT_SIGNING_KEY: test-jwt-signing-key
+      TZ: Asia/Tokyo
+      SERVER_HOST: http://localhost-test
+    depends_on: 
+      - db-test
+    entrypoint: "dockerize -timeout 60s -wait tcp://db-test:3306"
+  db-test:
+    image: mysql:8.0
+    container_name: anony-db-test
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: test-user
+      MYSQL_PASSWORD: test-pass
+      MYSQL_HOST: db-test
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: anony-test
+      TZ: Asia/Tokyo
+    volumes:
+      - ./docker/mysql/sql:/docker-entrypoint-initdb.d
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf

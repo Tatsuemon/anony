@@ -41,7 +41,7 @@ func (u *userUseCase) CreateUser(ctx context.Context, user *model.User) (*model.
 	}
 
 	v, err := u.transaction.DoInTx(ctx, func(ctx context.Context) (interface{}, error) {
-		return u.UserRepository.Store(ctx, user)
+		return u.UserRepository.Save(ctx, user)
 	})
 	if err != nil {
 		return nil, err

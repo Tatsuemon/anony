@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// DSN is DB config
 func DSN() string {
 	return fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s",

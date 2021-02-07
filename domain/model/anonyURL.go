@@ -11,13 +11,13 @@ type AnonyURL struct {
 }
 
 // NewAnonyURL create a new AnonyURL
-func NewAnonyURL(id string, original string, short string, status int64) (*AnonyURL, error) {
+func NewAnonyURL(id string, original string, short string, status int64) *AnonyURL {
 	return &AnonyURL{
 		ID:       id,
 		Original: original,
 		Short:    short,
 		Status:   status,
-	}, nil
+	}
 }
 
 // ValidateAnonyURL validates AnonyURL params
@@ -35,7 +35,7 @@ func (a AnonyURL) ValidateAnonyURL() error {
 		return fmt.Errorf("status is required")
 	}
 
-	if (a.Status < 1) && (a.Status > 2) {
+	if (a.Status < 1) || (a.Status > 2) {
 		return fmt.Errorf("status is out of range")
 	}
 	return nil

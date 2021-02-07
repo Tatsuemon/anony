@@ -40,40 +40,27 @@ func NewAnonyURLRepository(conn *sqlx.DB) repository.AnonyURLRepository {
 	return &anonyURLRepository{conn: conn}
 }
 
-func (r anonyURLRepository) FindByID(id string) ([]*model.AnonyURL, error) {
-	es := []*anonyURLReadEntity{}
-	if err := r.conn.Select(&es, "SELECT id, original, short, status, user_id, created_at, updated_at FROM urls WHERE id = ?", id); err != nil {
+func (r anonyURLRepository) FindByID(id string) (*model.AnonyURL, error) {
+	ae := anonyURLReadEntity{}
+	if err := r.conn.Get(&ae, "SELECT id, original, short, status, user_id, created_at, updated_at FROM urls WHERE id = ?", id); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
-	cURLs := make([]*model.AnonyURL, 0, len(es))
-	if len(es) == 0 {
-		return cURLs, nil
-	}
 
-	for _, v := range es {
-		co := mapAnonyURLReadEntityToAnonyURL(*v)
-		cURLs = append(cURLs, &co)
-	}
-
-	return cURLs, nil
+	res := mapAnonyURLReadEntityToAnonyURL(ae)
+	return &res, nil
 }
 
-func (r anonyURLRepository) FindByOriginalInUser(original string, userID string) ([]*model.AnonyURL, error) {
-	es := []*anonyURLReadEntity{}
-	if err := r.conn.Select(&es, "SELECT id, original, short, status, user_id, created_at, updated_at FROM urls WHERE original = ? AND user_id = ?", original, userID); err != nil {
+func (r anonyURLRepository) FindByOriginalInUser(original string, userID string) (*model.AnonyURL, error) {
+	ae := anonyURLReadEntity{}
+	if err := r.conn.Get(&ae, "SELECT id, original, short, status, user_id, created_at, updated_at FROM urls WHERE original = ? AND user_id = ?", original, userID); err != nil {
 		return nil, err
 	}
-	cURLs := make([]*model.AnonyURL, 0, len(es))
-	if len(es) == 0 {
-		return cURLs, nil
-	}
 
-	for _, v := range es {
-		co := mapAnonyURLReadEntityToAnonyURL(*v)
-		cURLs = append(cURLs, &co)
-	}
-
-	return cURLs, nil
+	res := mapAnonyURLReadEntityToAnonyURL(ae)
+	return &res, nil
 }
 
 func (r anonyURLRepository) Save(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error) {
