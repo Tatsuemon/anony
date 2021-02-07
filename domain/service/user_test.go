@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/Tatsuemon/anony/domain/model"
@@ -49,43 +50,19 @@ func (m userRepositoryMock) Delete(ctx context.Context, user *model.User) error 
 }
 
 func TestNewUserService(t *testing.T) {
-	type mocks struct {
-		// FakeFindAll             func() ([]*model.User, error)
-		FakeFindByID func(id string) (*model.User, error)
-		// FakeFindByName          func(name string) (*model.User, error)
-		// FakeFindByEmail         func(email string) (*model.User, error)
-		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
-		// FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-		// FakeSave               func(ctx context.Context, user *model.User) (*model.User, error)
-		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
-		// FakeDelete              func(ctx context.Context, user *model.User) error
-	}
 	tests := []struct {
-		name  string
-		mocks mocks
-		want  UserService
+		name string
+		want UserService
 	}{
 		{
-			name: "NORMAL: ",
-			mocks: mocks{
-				FakeFindByID: func(id string) (*model.User, error) {
-					return &model.User{
-						ID:            "id",
-						Name:          "name",
-						Email:         "email",
-						EncryptedPass: "password",
-					}, nil
-				},
-			},
-			want: &userService{},
+			name: "NORMAL: NewUserService",
+			want: &userService{userRepositoryMock{}},
 		},
 	}
 	for _, tt := range tests {
-		repo := userRepositoryMock{
-			FakeFindByID: tt.mocks.FakeFindByID,
-		}
+		repo := userRepositoryMock{}
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewUserService(repo); got == nil {
+			if got := NewUserService(repo); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewUserService() = %v, want %v", got, tt.want)
 			}
 		})

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/Tatsuemon/anony/domain/repository"
 )
@@ -22,25 +22,23 @@ func NewAnonyURLService(r repository.AnonyURLRepository) AnonyURLService {
 }
 
 func (c *anonyURLService) IsDuplicatedID(id string) error {
-	cURL, err := c.repo.FindByID(id) // TODO(Tatsuemon): sql.NoRowみたいなエラーが出ない方法で行う
+	an, err := c.repo.FindByID(id)
 	if err != nil {
 		return err
 	}
-	if len(cURL) != 0 {
-		err = errors.New("id is duplicated")
-		return err
+	if an != nil {
+		return fmt.Errorf("id is duplicated")
 	}
 	return nil
 }
 
 func (c *anonyURLService) IsExistedOriginalInUser(original string, userID string) error {
-	cURL, err := c.repo.FindByOriginalInUser(original, userID)
+	an, err := c.repo.FindByOriginalInUser(original, userID)
 	if err != nil {
 		return err
 	}
-	if len(cURL) != 0 {
-		err = errors.New("You have already created this original url")
-		return err
+	if an != nil {
+		return fmt.Errorf("You have already created this original url")
 	}
 	return nil
 }
