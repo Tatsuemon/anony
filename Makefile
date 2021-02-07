@@ -2,6 +2,16 @@
 install-goose:
 	GO111MODULE=on go get bitbucket.org/liamstask/goose/cmd/goose;
 
+# Develop
+build-dev:
+	docker-compose build
+
+goose-up-dev:
+	docker-compose run app goose up
+
+goose-down-dev:
+	docker-compose run app goose down
+
 # Protobuf
 gen-proto-go:
 	cd proto && \
