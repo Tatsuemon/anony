@@ -10,14 +10,22 @@ import (
 )
 
 type anonyURLRepoMock struct {
-	FakeFindByID             func(id string) (*model.AnonyURL, error)
-	FakeFindByOriginalInUser func(original string, userID string) (*model.AnonyURL, error)
-	FakeSave                 func(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error)
-	FakeUpdateStatus         func(ctx context.Context, an *model.AnonyURL) (*model.AnonyURL, error)
+	FakeFindByID               func(id string) (*model.AnonyURL, error)
+	FakeFindByUserID           func(userID string) ([]*model.AnonyURL, error)
+	FakeFindByUserIDWithStatus func(userID string, status int64) ([]*model.AnonyURL, error)
+	FakeFindByOriginalInUser   func(original string, userID string) (*model.AnonyURL, error)
+	FakeSave                   func(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error)
+	FakeUpdateStatus           func(ctx context.Context, an *model.AnonyURL) (*model.AnonyURL, error)
 }
 
 func (a anonyURLRepoMock) FindByID(id string) (*model.AnonyURL, error) {
 	return a.FakeFindByID(id)
+}
+func (a anonyURLRepoMock) FindByUserID(userID string) ([]*model.AnonyURL, error) {
+	return a.FakeFindByUserID(userID)
+}
+func (a anonyURLRepoMock) FindByUserIDWithStatus(userID string, status int64) ([]*model.AnonyURL, error) {
+	return a.FakeFindByUserIDWithStatus(userID, status)
 }
 func (a anonyURLRepoMock) FindByOriginalInUser(original string, userID string) (*model.AnonyURL, error) {
 	return a.FakeFindByOriginalInUser(original, userID)
@@ -51,9 +59,7 @@ func TestNewAnonyURLService(t *testing.T) {
 
 func Test_anonyURLService_ExistID(t *testing.T) {
 	type mocks struct {
-		FakeFindByID             func(id string) (*model.AnonyURL, error)
-		FakeFindByOriginalInUser func(original string, userID string) (*model.AnonyURL, error)
-		FakeSave                 func(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error)
+		FakeFindByID func(id string) (*model.AnonyURL, error)
 	}
 	type args struct {
 		id string
@@ -131,9 +137,7 @@ func Test_anonyURLService_ExistID(t *testing.T) {
 
 func Test_anonyURLService_ExistOriginalInUser(t *testing.T) {
 	type mocks struct {
-		FakeFindByID             func(id string) (*model.AnonyURL, error)
 		FakeFindByOriginalInUser func(original string, userID string) (*model.AnonyURL, error)
-		FakeSave                 func(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error)
 	}
 	type args struct {
 		original string
