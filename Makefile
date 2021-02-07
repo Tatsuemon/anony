@@ -11,8 +11,15 @@ install-protoc-gen-govalidators:
 	GO111MODULE=off go get github.com/mwitkow/go-proto-validators/protoc-gen-govalidators;
 
 # TEST
-prepafe-test-db:
+prepare-test-db:
 	docker-compose -f docker-compose.test.yml run app-test goose up
 
 test:
-	docker-compose -f docker-compose.test.yml run app-test go test -race ./...
+	docker-compose -f docker-compose.test.yml run app-test go test -v ./...
+
+# CI
+prepare-test-db-ci:
+	docker-compose -f docker-compose.ci.yml run app-test goose up
+
+test-ci:
+	docker-compose -f docker-compose.ci.yml run app-test go test -v ./...
