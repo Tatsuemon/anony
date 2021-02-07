@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/Tatsuemon/anony/domain/model"
@@ -30,20 +31,33 @@ func NewAnonyURLUseCase(r repository.AnonyURLRepository, t datastore.Transaction
 }
 
 func (u *anonyURLUseCase) SaveAnonyURL(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error) {
-	// TODO(Tatsuemon): すでにあって, statusが１でない場合は1に変更する
-	if err := u.service.IsExistedOriginalInUser(an.Original, userID); err != nil {
+	exist, err := u.service.ExistOriginalInUser(an.Original, userID)
+	if err != nil {
 		return nil, err
+	}
+	idExisted, err := u.service.ExistID(an.ID)
+	if err != nil {
+		return nil, err
+	}
+	if idExisted {
+		return nil, fmt.Errorf("id is already existed")
 	}
 
-	if err := u.service.IsDuplicatedID(an.ID); err != nil {
-		return nil, err
-	}
 	if err := an.ValidateAnonyURL(); err != nil {
 		return nil, err
 	}
 
 	v, err := u.transaction.DoInTx(ctx, func(ctx context.Context) (interface{}, error) {
-		return u.repo.Save(ctx, an, userID)
+		if exist {
+			au, err := u.repo.FindByOriginalInUser(an.Original, userID)
+			if err != nil {
+				return nil, err
+			}
+			an.ID = au.ID
+			return u.repo.UpdateStatus(ctx, an)
+		} else {
+			return u.repo.Save(ctx, an, userID)
+		}
 	})
 	if err != nil {
 		return nil, err

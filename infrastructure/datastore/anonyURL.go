@@ -56,6 +56,9 @@ func (r anonyURLRepository) FindByID(id string) (*model.AnonyURL, error) {
 func (r anonyURLRepository) FindByOriginalInUser(original string, userID string) (*model.AnonyURL, error) {
 	ae := anonyURLReadEntity{}
 	if err := r.conn.Get(&ae, "SELECT id, original, short, status, user_id, created_at, updated_at FROM urls WHERE original = ? AND user_id = ?", original, userID); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -93,5 +96,37 @@ func (r anonyURLRepository) Save(ctx context.Context, an *model.AnonyURL, userID
 		return nil, errors.Wrap(err, "failed to datastore.AnonyURLRepository.Save()")
 	}
 
+	return an, nil
+}
+
+func (r anonyURLRepository) UpdateStatus(ctx context.Context, an *model.AnonyURL) (*model.AnonyURL, error) {
+	// *sqlx.Tx, *sqlx.DBの両方で使用できるようにinterfaceの指定
+	var tx interface {
+		Prepare(query string) (*sql.Stmt, error)
+	}
+
+	// context.Contextから*sqlx.Txを取得
+	tx, ok := GetTx(ctx)
+	if !ok {
+		tx = r.conn // context.Contextに存在しない場合は, repositoryの*sqlx.DBを使用
+	}
+
+	stmt, err := tx.Prepare("UPDATE `urls` SET status = ? WHERE id = ?")
+
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to datastore.AnonyURLRepository.UpdateStatus()")
+	}
+
+	defer func() {
+		if closeErr := stmt.Close(); closeErr != nil {
+			// TODO(Tatseumon): 挙動確認
+			err = closeErr
+		}
+	}()
+
+	_, err = stmt.Exec(an.Status, an.ID)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to datastore.AnonyURLRepository.UpdateStatus()")
+	}
 	return an, nil
 }

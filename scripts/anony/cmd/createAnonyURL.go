@@ -35,17 +35,17 @@ func init() {
 
 type createAnonyURLOpts struct {
 	Original string
+	InActive bool
 }
 
 func newCreateAnonyURLCmd() *cobra.Command {
+	opts := &createAnonyURLOpts{}
 	cmd := &cobra.Command{
 		Use:   "create [original url]",
 		Short: "create",
-		Long:  `create Anony URL from original URL.`,
+		Long:  "create Anony URL from original URL.\nif you do not set 'in_active' flag, this URL is open.",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			opts := &createAnonyURLOpts{
-				Original: args[0],
-			}
+			opts.Original = args[0]
 			if err := createAnonyURL(cmd, opts); err != nil {
 				fmt.Println()
 				return errors.Wrap(err, "failed to execute a command 'create'\n")
@@ -54,7 +54,7 @@ func newCreateAnonyURLCmd() *cobra.Command {
 		},
 		Args: cobra.MinimumNArgs(1),
 	}
-
+	cmd.Flags().BoolVarP(&opts.InActive, "inactive", "i", false, "set URL inactive")
 	return cmd
 }
 
@@ -73,6 +73,7 @@ func createAnonyURL(cmd *cobra.Command, opts *createAnonyURLOpts) error {
 	cli := rpc.NewAnonyServiceClient(conn)
 	req := &rpc.CreateAnonyURLRequest{
 		OriginalUrl: opts.Original,
+		IsActive:    !opts.InActive,
 	}
 
 	// ~/.anony/config.yamlからJWTの取得

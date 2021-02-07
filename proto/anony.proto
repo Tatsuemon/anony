@@ -49,18 +49,27 @@ message LogInUserResponse {
 
 service AnonyService {
     rpc CreateAnonyURL (CreateAnonyURLRequest) returns (CreateAnonyURLResponse);
+    // rpc UpdateAnonyURLStatus (UpdateAnonyURLStatusRequest) returns (UpdateAnonyURLStatusResponse);
 }
 
 message CreateAnonyURLRequest {
     string original_url = 1;
+    bool is_active = 2;
 }
 
 message CreateAnonyURLResponse {
     string original_url = 1;
     string short_url = 2;
-    int64 status = 3;
+    bool is_active = 3;
 }
 
+// message UpdateAnonyURLStatusRequest {
+//     string original_url = 1;
+// }
+
+// message UpdateAnonyURLStatusResponse {
+
+// }
 // message UpdateUserRequest {
 //     UserBase user = 1;
 //     string token = 2;

@@ -22,6 +22,13 @@ func NewAnonyURLHandler(u usecase.AnonyURLUseCase) *AnonyURLHandler {
 // CreateAnonyURL creates anonyURL
 func (a *AnonyURLHandler) CreateAnonyURL(ctx context.Context, in *rpc.CreateAnonyURLRequest) (*rpc.CreateAnonyURLResponse, error) {
 	ori := in.GetOriginalUrl()
+	isActive := in.GetIsActive()
+	var status int64
+	if isActive {
+		status = 1
+	} else {
+		status = 2
+	}
 
 	userID, err := model.GetUserIDInContext(ctx)
 	if err != nil {
@@ -32,7 +39,7 @@ func (a *AnonyURLHandler) CreateAnonyURL(ctx context.Context, in *rpc.CreateAnon
 	if err != nil {
 		return nil, err
 	}
-	an := model.NewAnonyURL(uuid.New().String(), ori, su, 1)
+	an := model.NewAnonyURL(uuid.New().String(), ori, su, status)
 	_, err = a.usecase.SaveAnonyURL(ctx, an, userID)
 	if err != nil {
 		return nil, err
@@ -41,7 +48,7 @@ func (a *AnonyURLHandler) CreateAnonyURL(ctx context.Context, in *rpc.CreateAnon
 	res := &rpc.CreateAnonyURLResponse{
 		OriginalUrl: an.Original,
 		ShortUrl:    an.Short,
-		Status:      an.Status,
+		IsActive:    an.Status == 1,
 	}
 
 	return res, nil

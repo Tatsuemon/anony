@@ -18,9 +18,8 @@ rpcに処理のerror内容を渡す
 
     検証して, 登録 + ログイン
 
-
-    下のやつ以外はほとんどできた
-    トークンの発行 + ~/.anony/configに追加
+    ~トークンの発行 + ~/.anony/configに追加~
+    JWTはsqliteに保存するようにする
 
 - [ ] ユーザーの更新
 
@@ -29,7 +28,8 @@ rpcに処理のerror内容を渡す
 - [ ] ユーザーのログイン + CLIの追加
     `$ anony login`
     name(or email) passwordでログイン処理
-    トークンの発行 + ~/.anony/configに追加
+    ~トークンの発行 + ~/.anony/configに追加~
+    JWTはsqliteに保存するようにする
 
 - [ ] ユーザーの認証処理
     ユーザー登録, ログイン以外で使用するtokenの認証機能
@@ -37,7 +37,7 @@ rpcに処理のerror内容を渡す
 - [ ] ユーザーのログアウト + CLIの追加
     `$ anony logout`
 
-    トークンの削除, DBのAuths Tableのstatusの変更
+    Client側でJWTを削除
 
 - [ ] 登録APIの作成
     `$ anony create [original url]`
