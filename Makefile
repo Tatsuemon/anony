@@ -14,11 +14,8 @@ install-protoc-gen-govalidators:
 build-test:
 	docker-compose -f docker-compose.test.yml build
 
-up-test:
-	docker-compose -f docker-compose.test.yml up -d
-
 prepare-test-db:
-	docker-compose -f docker-compose.test.yml exec -T app-test goose up
+	docker-compose -f docker-compose.test.yml run app-test goose up
 
 test:
-	docker-compose -f docker-compose.test.yml exec -T app-test go test -v ./...
+	docker-compose -f docker-compose.test.yml run app-test go test -v ./...
