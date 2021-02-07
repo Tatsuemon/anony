@@ -11,13 +11,13 @@ type AnonyURL struct {
 }
 
 // NewAnonyURL create a new AnonyURL
-func NewAnonyURL(id string, original string, short string, status int64) (*AnonyURL, error) {
+func NewAnonyURL(id string, original string, short string, status int64) *AnonyURL {
 	return &AnonyURL{
 		ID:       id,
 		Original: original,
 		Short:    short,
 		Status:   status,
-	}, nil
+	}
 }
 
 // ValidateAnonyURL validates AnonyURL params

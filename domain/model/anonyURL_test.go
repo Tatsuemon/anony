@@ -13,10 +13,9 @@ func TestNewAnonyURL(t *testing.T) {
 		status   int64
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    *AnonyURL
-		wantErr bool
+		name string
+		args args
+		want *AnonyURL
 	}{
 		{
 			name: "NORMAL: 正常にAnonyURLを作成できる",
@@ -32,17 +31,11 @@ func TestNewAnonyURL(t *testing.T) {
 				Short:    "short-url",
 				Status:   1,
 			},
-			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewAnonyURL(tt.args.id, tt.args.original, tt.args.short, tt.args.status)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("NewAnonyURL() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if got := NewAnonyURL(tt.args.id, tt.args.original, tt.args.short, tt.args.status); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewAnonyURL() = %v, want %v", got, tt.want)
 			}
 		})
