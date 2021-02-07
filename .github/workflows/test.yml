@@ -8,6 +8,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: build test containers
       run: make build-test
+    - name: up test containers
+      run: make up-test
     - name: prepare db for test
       run: make prepare-test-db
     - name: go test
