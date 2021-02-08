@@ -51,58 +51,52 @@ func (u *anonyURLUseCase) CreateAnonyURL(ctx context.Context, userID string) (st
 }
 
 func (u *anonyURLUseCase) SaveAnonyURL(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error) {
-	v, err := u.transaction.DoInTx(ctx, func(ctx context.Context) (interface{}, error) {
-		exist, err := u.service.ExistOriginalInUser(an.Original, userID)
-		if err != nil {
-			return nil, err
-		}
-		idExisted, err := u.service.ExistID(an.ID)
-		if err != nil {
-			return nil, err
-		}
-		if idExisted {
-			return nil, fmt.Errorf("id is already existed")
-		}
+	exist, err := u.service.ExistOriginalInUser(an.Original, userID)
+	if err != nil {
+		return nil, err
+	}
+	idExisted, err := u.service.ExistID(an.ID)
+	if err != nil {
+		return nil, err
+	}
+	if idExisted {
+		return nil, fmt.Errorf("id is already existed")
+	}
 
-		if err := an.ValidateAnonyURL(); err != nil {
-			return nil, err
-		}
+	if err := an.ValidateAnonyURL(); err != nil {
+		return nil, err
+	}
+	_, err = u.transaction.DoInTx(ctx, func(ctx context.Context) (interface{}, error) {
 		if exist {
 			id, err := u.repo.GetIDByOriginalUser(an.Original, userID)
 			if err != nil {
 				return nil, err
 			}
-			if err := u.repo.UpdateStatus(ctx, id, an.Status); err != nil {
-				return nil, err
-			}
-			return u.repo.FindByID(id)
+			an.ID = id
+			return nil, u.repo.UpdateStatus(ctx, id, an.Status)
 		}
-		if err := u.repo.Save(ctx, an, userID); err != nil {
-			return nil, err
-		}
-		return u.repo.FindByID(an.ID)
+		return nil, u.repo.Save(ctx, an, userID)
 	})
 	if err != nil {
 		return nil, err
 	}
-	return v.(*model.AnonyURL), nil
+	return u.repo.FindByID(an.ID)
 }
 
 func (u *anonyURLUseCase) UpdateAnonyURLStatus(ctx context.Context, original, userID string, status int64) (*model.AnonyURL, error) {
-	v, err := u.transaction.DoInTx(ctx, func(ctx context.Context) (interface{}, error) {
-		id, err := u.repo.GetIDByOriginalUser(original, userID)
+	var id string
+	_, err := u.transaction.DoInTx(ctx, func(ctx context.Context) (interface{}, error) {
+		aid, err := u.repo.GetIDByOriginalUser(original, userID)
+		id = aid
 		if err != nil {
 			return nil, err
 		}
-		if err := u.repo.UpdateStatus(ctx, id, status); err != nil {
-			return nil, err
-		}
-		return u.repo.FindByID(id)
+		return nil, u.repo.UpdateStatus(ctx, id, status)
 	})
 	if err != nil {
 		return nil, err
 	}
-	return v.(*model.AnonyURL), nil
+	return u.repo.FindByID(id)
 }
 
 func (u *anonyURLUseCase) ListAnonyURLs(ctx context.Context, userID string, q int64) ([]*model.AnonyURL, error) {

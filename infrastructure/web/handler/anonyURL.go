@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"log"
 
 	"github.com/Tatsuemon/anony/domain/model"
 	"github.com/Tatsuemon/anony/rpc"
@@ -128,7 +127,6 @@ func (a *AnonyURLHandler) UpdateAnonyURLStatus(ctx context.Context, in *rpc.Upda
 	if err != nil {
 		return nil, err
 	}
-	log.Println(ans)
 	res := &rpc.UpdateAnonyURLStatusResponse{
 		AnonyUrl: &rpc.AnonyURL{
 			OriginalUrl: ans.Original,
@@ -136,6 +134,5 @@ func (a *AnonyURLHandler) UpdateAnonyURLStatus(ctx context.Context, in *rpc.Upda
 			IsActive:    ans.Status == 1,
 		},
 	}
-
 	return res, nil
 }
