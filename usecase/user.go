@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 	"database/sql"
-	"errors"
+	"fmt"
 
 	"github.com/Tatsuemon/anony/domain/model"
 	"github.com/Tatsuemon/anony/domain/repository"
@@ -58,13 +58,13 @@ func (u *userUseCase) CheckDuplicatedUser(ctx context.Context, user *model.User)
 func (u *userUseCase) VerifyByNameOrEmailPass(ctx context.Context, nameOrEmail, password string) (*model.User, error) {
 	user, err := u.UserRepository.FindByNameOrEmail(nameOrEmail)
 	if err == sql.ErrNoRows {
-		return nil, errors.New("Wrong name or email, password")
+		return nil, fmt.Errorf("Wrong name or email, password")
 	}
 	if err != nil {
-		return nil, errors.New("failed to userRepository.FindByNameOrEmailPass")
+		return nil, fmt.Errorf("failed to userRepository.FindByNameOrEmailPass")
 	}
 	if ok := user.MatchPassword(password); !ok {
-		return nil, errors.New("Wrong name or email, password")
+		return nil, fmt.Errorf("Wrong name or email, password")
 	}
 
 	return user, nil

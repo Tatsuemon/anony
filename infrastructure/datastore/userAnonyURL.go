@@ -20,11 +20,13 @@ func NewUserAnonyURLAccessor(conn *sqlx.DB) queryservice.UserAnonyURLAccessor {
 func (a userAnonyURLAccessor) CountAnonyURLByUser(userID string) (*dto.AnonyURLCountByUser, error) {
 	res := dto.AnonyURLCountByUser{}
 	q := `
-	SELECT name, email, COUNT(*), COUNT(urls.status = 1)
+	SELECT name, email, COUNT(user_id) AS count_urls, COUNT(status=1 or null) AS count_active_urls
 	FROM users
-	INNER JOIN urls ON usrs.id = urls.useri=_id
+	INNER JOIN urls ON users.id = urls.user_id
 	WHERE user_id = ?
+	GROUP BY (user_id)
 	`
+
 	if err := a.conn.Get(&res, q, userID); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil

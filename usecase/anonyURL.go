@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 	"crypto/rand"
-	"errors"
 	"fmt"
 	"os"
 
@@ -75,7 +74,7 @@ func (u *anonyURLUseCase) CreateAnonyURL(ctx context.Context, userID string) (st
 	// 乱数を生成
 	b := make([]byte, 8)
 	if _, err := rand.Read(b); err != nil {
-		return "", errors.New("unexpected error")
+		return "", fmt.Errorf("unexpected error")
 	}
 	// letters からランダムに取り出して文字列を生成
 	for _, v := range b {
