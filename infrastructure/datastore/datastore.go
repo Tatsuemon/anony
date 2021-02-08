@@ -35,6 +35,7 @@ func NewMysqlDB(datasource string) (*MysqlDB, error) {
 	return &MysqlDB{DB: db}, nil
 }
 
+// Close close db connection
 func (m *MysqlDB) Close() error {
 	return m.DB.Close()
 }

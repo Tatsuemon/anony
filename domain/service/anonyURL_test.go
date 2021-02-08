@@ -15,8 +15,9 @@ type anonyURLRepoMock struct {
 	FakeFindByUserIDWithStatus func(userID string, status int64) ([]*model.AnonyURL, error)
 	FakeFindByOriginalInUser   func(original string, userID string) (*model.AnonyURL, error)
 	FakeFindByAnonyURL         func(anonyURL string) (*model.AnonyURL, error)
-	FakeSave                   func(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error)
-	FakeUpdateStatus           func(ctx context.Context, an *model.AnonyURL) (*model.AnonyURL, error)
+	FakeGetIDByOriginalUser    func(original, userID string) (string, error)
+	FakeSave                   func(ctx context.Context, an *model.AnonyURL, userID string) error
+	FakeUpdateStatus           func(ctx context.Context, id string, status int64) error
 }
 
 func (a anonyURLRepoMock) FindByID(id string) (*model.AnonyURL, error) {
@@ -34,12 +35,14 @@ func (a anonyURLRepoMock) FindByOriginalInUser(original string, userID string) (
 func (a anonyURLRepoMock) FindByAnonyURL(anonyURL string) (*model.AnonyURL, error) {
 	return a.FakeFindByAnonyURL(anonyURL)
 }
-
-func (a anonyURLRepoMock) Save(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error) {
+func (a anonyURLRepoMock) GetIDByOriginalUser(original, userID string) (string, error) {
+	return a.FakeGetIDByOriginalUser(original, userID)
+}
+func (a anonyURLRepoMock) Save(ctx context.Context, an *model.AnonyURL, userID string) error {
 	return a.FakeSave(ctx, an, userID)
 }
-func (a anonyURLRepoMock) UpdateStatus(ctx context.Context, an *model.AnonyURL) (*model.AnonyURL, error) {
-	return a.FakeUpdateStatus(ctx, an)
+func (a anonyURLRepoMock) UpdateStatus(ctx context.Context, id string, status int64) error {
+	return a.FakeUpdateStatus(ctx, id, status)
 }
 
 func TestNewAnonyURLService(t *testing.T) {
