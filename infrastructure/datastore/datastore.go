@@ -7,14 +7,17 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// DataBase is interface of DB
 type DataBase interface {
 	Close() error
 }
 
+// MysqlDB is DB using Mysql
 type MysqlDB struct {
 	DB *sqlx.DB
 }
 
+// NewMysqlDB create MysqlDB
 func NewMysqlDB(datasource string) (*MysqlDB, error) {
 	db, err := sqlx.Open("mysql", datasource)
 	if err != nil {

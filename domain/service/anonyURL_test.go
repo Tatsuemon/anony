@@ -10,19 +10,31 @@ import (
 )
 
 type anonyURLRepoMock struct {
-	FakeFindByID             func(id string) (*model.AnonyURL, error)
-	FakeFindByOriginalInUser func(original string, userID string) (*model.AnonyURL, error)
-	FakeSave                 func(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error)
+	FakeFindByID               func(id string) (*model.AnonyURL, error)
+	FakeFindByUserID           func(userID string) ([]*model.AnonyURL, error)
+	FakeFindByUserIDWithStatus func(userID string, status int64) ([]*model.AnonyURL, error)
+	FakeFindByOriginalInUser   func(original string, userID string) (*model.AnonyURL, error)
+	FakeSave                   func(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error)
+	FakeUpdateStatus           func(ctx context.Context, an *model.AnonyURL) (*model.AnonyURL, error)
 }
 
 func (a anonyURLRepoMock) FindByID(id string) (*model.AnonyURL, error) {
 	return a.FakeFindByID(id)
+}
+func (a anonyURLRepoMock) FindByUserID(userID string) ([]*model.AnonyURL, error) {
+	return a.FakeFindByUserID(userID)
+}
+func (a anonyURLRepoMock) FindByUserIDWithStatus(userID string, status int64) ([]*model.AnonyURL, error) {
+	return a.FakeFindByUserIDWithStatus(userID, status)
 }
 func (a anonyURLRepoMock) FindByOriginalInUser(original string, userID string) (*model.AnonyURL, error) {
 	return a.FakeFindByOriginalInUser(original, userID)
 }
 func (a anonyURLRepoMock) Save(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error) {
 	return a.FakeSave(ctx, an, userID)
+}
+func (a anonyURLRepoMock) UpdateStatus(ctx context.Context, an *model.AnonyURL) (*model.AnonyURL, error) {
+	return a.FakeUpdateStatus(ctx, an)
 }
 
 func TestNewAnonyURLService(t *testing.T) {
@@ -45,11 +57,9 @@ func TestNewAnonyURLService(t *testing.T) {
 	}
 }
 
-func Test_anonyURLService_IsDuplicatedID(t *testing.T) {
+func Test_anonyURLService_ExistID(t *testing.T) {
 	type mocks struct {
-		FakeFindByID             func(id string) (*model.AnonyURL, error)
-		FakeFindByOriginalInUser func(original string, userID string) (*model.AnonyURL, error)
-		FakeSave                 func(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error)
+		FakeFindByID func(id string) (*model.AnonyURL, error)
 	}
 	type args struct {
 		id string
@@ -58,6 +68,7 @@ func Test_anonyURLService_IsDuplicatedID(t *testing.T) {
 		name    string
 		args    args
 		mocks   mocks
+		want    bool
 		wantErr bool
 	}{
 		{
@@ -70,10 +81,11 @@ func Test_anonyURLService_IsDuplicatedID(t *testing.T) {
 					return nil, nil
 				},
 			},
+			want:    false,
 			wantErr: false,
 		},
 		{
-			name: "ERROR: 重複するものが存在する場合",
+			name: "NORMAL: 重複するものが存在する場合",
 			args: args{
 				id: "id",
 			},
@@ -87,7 +99,8 @@ func Test_anonyURLService_IsDuplicatedID(t *testing.T) {
 					}, nil
 				},
 			},
-			wantErr: true,
+			want:    true,
+			wantErr: false,
 		},
 		{
 			name: "ERROR: anonyURLRepo.FindByIDがErrorを返す",
@@ -99,28 +112,32 @@ func Test_anonyURLService_IsDuplicatedID(t *testing.T) {
 					return nil, fmt.Errorf("error")
 				},
 			},
+			want:    false,
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &anonyURLService{
+			a := &anonyURLService{
 				repo: anonyURLRepoMock{
 					FakeFindByID: tt.mocks.FakeFindByID,
 				},
 			}
-			if err := c.IsDuplicatedID(tt.args.id); (err != nil) != tt.wantErr {
-				t.Errorf("anonyURLService.IsDuplicatedID() error = %v, wantErr %v", err, tt.wantErr)
+			got, err := a.ExistID(tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("anonyURLService.ExistID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("anonyURLService.ExistID() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_anonyURLService_IsExistedOriginalInUser(t *testing.T) {
+func Test_anonyURLService_ExistOriginalInUser(t *testing.T) {
 	type mocks struct {
-		FakeFindByID             func(id string) (*model.AnonyURL, error)
 		FakeFindByOriginalInUser func(original string, userID string) (*model.AnonyURL, error)
-		FakeSave                 func(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error)
 	}
 	type args struct {
 		original string
@@ -130,6 +147,7 @@ func Test_anonyURLService_IsExistedOriginalInUser(t *testing.T) {
 		name    string
 		args    args
 		mocks   mocks
+		want    bool
 		wantErr bool
 	}{
 		{
@@ -143,10 +161,11 @@ func Test_anonyURLService_IsExistedOriginalInUser(t *testing.T) {
 					return nil, nil
 				},
 			},
+			want:    false,
 			wantErr: false,
 		},
 		{
-			name: "ERROR: 重複するものが存在する場合",
+			name: "NORMAL: 重複するものが存在する場合",
 			args: args{
 				original: "original",
 				userID:   "user-id",
@@ -161,7 +180,8 @@ func Test_anonyURLService_IsExistedOriginalInUser(t *testing.T) {
 					}, nil
 				},
 			},
-			wantErr: true,
+			want:    true,
+			wantErr: false,
 		},
 		{
 			name: "ERROR: anonyURLRepo.FindByOriginalInUserがERRORを返す時",
@@ -174,18 +194,24 @@ func Test_anonyURLService_IsExistedOriginalInUser(t *testing.T) {
 					return nil, fmt.Errorf("error")
 				},
 			},
+			want:    false,
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &anonyURLService{
+			a := &anonyURLService{
 				repo: anonyURLRepoMock{
 					FakeFindByOriginalInUser: tt.mocks.FakeFindByOriginalInUser,
 				},
 			}
-			if err := c.IsExistedOriginalInUser(tt.args.original, tt.args.userID); (err != nil) != tt.wantErr {
-				t.Errorf("anonyURLService.IsExistedOriginalInUser() error = %v, wantErr %v", err, tt.wantErr)
+			got, err := a.ExistOriginalInUser(tt.args.original, tt.args.userID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("anonyURLService.ExistOriginalInUser() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("anonyURLService.ExistOriginalInUser() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -46,21 +46,53 @@ message LogInUserResponse {
     string token = 2;
 }
 
-
 service AnonyService {
     rpc CreateAnonyURL (CreateAnonyURLRequest) returns (CreateAnonyURLResponse);
+    // rpc UpdateAnonyURLStatus (UpdateAnonyURLStatusRequest) returns (UpdateAnonyURLStatusResponse);
+    rpc ListAnonyURLs (ListAnonyURLsRequest) returns (ListAnonyURLsResponse);
+    rpc CountAnonyURLs (google.protobuf.Empty) returns (CountAnonyURLsResponse);
 }
 
 message CreateAnonyURLRequest {
     string original_url = 1;
+    bool is_active = 2;
 }
 
 message CreateAnonyURLResponse {
     string original_url = 1;
     string short_url = 2;
-    int64 status = 3;
+    bool is_active = 3;
 }
 
+message AnonyURL {
+    string original_url = 1;
+    string short_url = 2;
+    bool is_active = 3;
+}
+
+message ListAnonyURLsRequest {
+    bool inActive = 1;
+    bool all = 2;
+}
+
+message ListAnonyURLsResponse {
+    repeated AnonyURL anony_urls = 1;
+}
+
+message CountAnonyURLsResponse {
+    string name = 1;
+    string email = 2;
+    int64 count_all = 3;
+    int64 count_active = 4;
+}
+
+// message UpdateAnonyURLStatusRequest {
+//     string original_url = 1;
+// }
+
+// message UpdateAnonyURLStatusResponse {
+
+// }
 // message UpdateUserRequest {
 //     UserBase user = 1;
 //     string token = 2;

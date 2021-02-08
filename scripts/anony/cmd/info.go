@@ -20,6 +20,8 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"google.golang.org/protobuf/types/known/emptypb"
+
 	"github.com/Tatsuemon/anony/rpc"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -30,35 +32,29 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(newCreateAnonyURLCmd())
+	rootCmd.AddCommand(newInfoCmd())
 }
 
-type createAnonyURLOpts struct {
-	Original string
-	InActive bool
-}
+type infoLOpts struct{}
 
-func newCreateAnonyURLCmd() *cobra.Command {
-	opts := &createAnonyURLOpts{}
+func newInfoCmd() *cobra.Command {
+	opts := &infoLOpts{}
 	cmd := &cobra.Command{
-		Use:   "create [original url]",
-		Short: "create",
-		Long:  "create Anony URL from original URL.\nif you do not set 'in_active' flag, this URL is open.",
+		Use:   "info",
+		Short: "information of you",
+		Long:  "show user's infomation",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			opts.Original = args[0]
-			if err := createAnonyURL(cmd, opts); err != nil {
+			if err := info(cmd, opts); err != nil {
 				fmt.Println()
-				return errors.Wrap(err, "failed to execute a command 'create'\n")
+				return errors.Wrap(err, "failed to execute a command 'info'\n")
 			}
 			return nil
 		},
-		Args: cobra.MinimumNArgs(1),
 	}
-	cmd.Flags().BoolVarP(&opts.InActive, "inactive", "i", false, "set URL inactive")
 	return cmd
 }
 
-func createAnonyURL(cmd *cobra.Command, opts *createAnonyURLOpts) error {
+func info(cmd *cobra.Command, opts *infoLOpts) error {
 	conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
 
 	if err != nil {
@@ -71,10 +67,7 @@ func createAnonyURL(cmd *cobra.Command, opts *createAnonyURLOpts) error {
 	}()
 
 	cli := rpc.NewAnonyServiceClient(conn)
-	req := &rpc.CreateAnonyURLRequest{
-		OriginalUrl: opts.Original,
-		IsActive:    !opts.InActive,
-	}
+	req := &emptypb.Empty{}
 
 	// ~/.anony/config.yamlからJWTの取得
 	buf, err := ioutil.ReadFile(viper.ConfigFileUsed())
@@ -90,9 +83,9 @@ func createAnonyURL(cmd *cobra.Command, opts *createAnonyURLOpts) error {
 	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
 	// API call
-	res, err := cli.CreateAnonyURL(ctx, req)
+	res, err := cli.CountAnonyURLs(ctx, req)
 	if err != nil {
-		return errors.Wrap(err, "failed to cli.CreateAnonyURL\n")
+		return errors.Wrap(err, "failed to cli.CountAnonyURLs\n")
 	}
 
 	// TODO(Tatsuemon): 出力の調整

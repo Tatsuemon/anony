@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"context"
-	"errors"
+	"fmt"
 
 	"github.com/Tatsuemon/anony/domain/model"
 	"github.com/Tatsuemon/anony/domain/service"
@@ -32,7 +32,7 @@ func JWTAuth(s service.UserService) AuthFunc {
 			return nil, err
 		}
 		if !flag {
-			return nil, errors.New("token is invalid")
+			return nil, fmt.Errorf("token is invalid")
 		}
 		ctx = model.SetUserIDInContext(ctx, userID)
 		return ctx, nil

@@ -30,35 +30,34 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(newCreateAnonyURLCmd())
+	rootCmd.AddCommand(newListAnonyURLsCmd())
 }
 
-type createAnonyURLOpts struct {
-	Original string
+type listAnonyURLsOpts struct {
 	InActive bool
+	All      bool
 }
 
-func newCreateAnonyURLCmd() *cobra.Command {
-	opts := &createAnonyURLOpts{}
+func newListAnonyURLsCmd() *cobra.Command {
+	opts := &listAnonyURLsOpts{}
 	cmd := &cobra.Command{
-		Use:   "create [original url]",
-		Short: "create",
-		Long:  "create Anony URL from original URL.\nif you do not set 'in_active' flag, this URL is open.",
+		Use:   "ls",
+		Short: "list",
+		Long:  "list your Anony URLs.\n By default, get Active Anony URLs.\nif you want to get in-active URLs, set 'inactive' flag.\nand if you want to get active and in-active URLs, set 'all' flag.",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			opts.Original = args[0]
-			if err := createAnonyURL(cmd, opts); err != nil {
+			if err := listAnonyURLs(cmd, opts); err != nil {
 				fmt.Println()
-				return errors.Wrap(err, "failed to execute a command 'create'\n")
+				return errors.Wrap(err, "failed to execute a command 'ls'\n")
 			}
 			return nil
 		},
-		Args: cobra.MinimumNArgs(1),
 	}
-	cmd.Flags().BoolVarP(&opts.InActive, "inactive", "i", false, "set URL inactive")
+	cmd.Flags().BoolVarP(&opts.InActive, "inactive", "i", false, "get in-active URLs")
+	cmd.Flags().BoolVarP(&opts.All, "all", "a", false, "get active & in-active URLs")
 	return cmd
 }
 
-func createAnonyURL(cmd *cobra.Command, opts *createAnonyURLOpts) error {
+func listAnonyURLs(cmd *cobra.Command, opts *listAnonyURLsOpts) error {
 	conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
 
 	if err != nil {
@@ -71,9 +70,9 @@ func createAnonyURL(cmd *cobra.Command, opts *createAnonyURLOpts) error {
 	}()
 
 	cli := rpc.NewAnonyServiceClient(conn)
-	req := &rpc.CreateAnonyURLRequest{
-		OriginalUrl: opts.Original,
-		IsActive:    !opts.InActive,
+	req := &rpc.ListAnonyURLsRequest{
+		InActive: opts.InActive,
+		All:      opts.All,
 	}
 
 	// ~/.anony/config.yamlからJWTの取得
@@ -90,9 +89,9 @@ func createAnonyURL(cmd *cobra.Command, opts *createAnonyURLOpts) error {
 	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
 	// API call
-	res, err := cli.CreateAnonyURL(ctx, req)
+	res, err := cli.ListAnonyURLs(ctx, req)
 	if err != nil {
-		return errors.Wrap(err, "failed to cli.CreateAnonyURL\n")
+		return errors.Wrap(err, "failed to cli.ListAnonyURLs\n")
 	}
 
 	// TODO(Tatsuemon): 出力の調整

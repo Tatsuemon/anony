@@ -1,15 +1,13 @@
 package service
 
 import (
-	"fmt"
-
 	"github.com/Tatsuemon/anony/domain/repository"
 )
 
 // AnonyURLService is a service.
 type AnonyURLService interface {
-	IsDuplicatedID(id string) error
-	IsExistedOriginalInUser(original string, userID string) error
+	ExistID(id string) (bool, error)
+	ExistOriginalInUser(original, userID string) (bool, error)
 }
 
 type anonyURLService struct {
@@ -21,24 +19,18 @@ func NewAnonyURLService(r repository.AnonyURLRepository) AnonyURLService {
 	return &anonyURLService{r}
 }
 
-func (c *anonyURLService) IsDuplicatedID(id string) error {
-	an, err := c.repo.FindByID(id)
+func (a *anonyURLService) ExistID(id string) (bool, error) {
+	an, err := a.repo.FindByID(id)
 	if err != nil {
-		return err
+		return false, err
 	}
-	if an != nil {
-		return fmt.Errorf("id is duplicated")
-	}
-	return nil
+	return an != nil, nil
 }
 
-func (c *anonyURLService) IsExistedOriginalInUser(original string, userID string) error {
-	an, err := c.repo.FindByOriginalInUser(original, userID)
+func (a *anonyURLService) ExistOriginalInUser(original, userID string) (bool, error) {
+	an, err := a.repo.FindByOriginalInUser(original, userID)
 	if err != nil {
-		return err
+		return false, err
 	}
-	if an != nil {
-		return fmt.Errorf("You have already created this original url")
-	}
-	return nil
+	return an != nil, nil
 }
