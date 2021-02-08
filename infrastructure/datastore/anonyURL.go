@@ -92,6 +92,17 @@ func (r anonyURLRepository) FindByOriginalInUser(original string, userID string)
 	res := mapAnonyURLReadEntityToAnonyURL(ae)
 	return &res, nil
 }
+func (r anonyURLRepository) FindByAnonyURL(anonyURL string) (*model.AnonyURL, error) {
+	ae := anonyURLReadEntity{}
+	if err := r.conn.Get(&ae, "SELECT id, original, short, status, user_id, created_at, updated_at FROM urls WHERE short = ?", anonyURL); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+	res := mapAnonyURLReadEntityToAnonyURL(ae)
+	return &res, nil
+}
 
 func (r anonyURLRepository) GetIDByOriginalUser(original, userID string) (string, error) {
 	var id string

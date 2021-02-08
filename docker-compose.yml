@@ -1,17 +1,28 @@
 version: "3"
 services:
+  http:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    container_name: anony-http
+    ports:
+      - 8888:8888
+    env_file: .env
+    depends_on: 
+      - db
+    volumes:
+      - ./:/go/src/github.com/Tatsuemon/anony
+    command: go run cmd/http/main.go
   app:
     build:
       context: .
       dockerfile: ./docker/app/Dockerfile
     container_name: anony
-    # tty: true
     ports:
       - 8080:8080
     env_file: .env
     depends_on: 
       - db
-    # entrypoint: "dockerize -timeout 60s -wait tcp://db-test:3306"
     volumes:
       - ./:/go/src/github.com/Tatsuemon/anony
   db:

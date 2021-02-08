@@ -18,6 +18,7 @@ type AnonyURLUseCase interface {
 	SaveAnonyURL(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error)
 	UpdateAnonyURLStatus(ctx context.Context, original, userID string, status int64) (*model.AnonyURL, error)
 	ListAnonyURLs(ctx context.Context, userID string, q int64) ([]*model.AnonyURL, error)
+	GetOriginalByAnonyURL(ctx context.Context, anonyURL string) (string, error)
 }
 
 type anonyURLUseCase struct {
@@ -112,4 +113,12 @@ func (u *anonyURLUseCase) ListAnonyURLs(ctx context.Context, userID string, q in
 	} else {
 		return nil, fmt.Errorf("out of range")
 	}
+}
+
+func (u *anonyURLUseCase) GetOriginalByAnonyURL(ctx context.Context, anonyURL string) (string, error) {
+	an, err := u.repo.FindByAnonyURL(anonyURL)
+	if err != nil {
+		return "", nil
+	}
+	return an.Original, nil
 }

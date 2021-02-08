@@ -65,7 +65,7 @@ rpcに処理のerror内容を渡す
     statusを1に変更する
 
 (WEBサーバー)
-- [ ] locationを指定したpage(GET)の作成
+- [x] locationを指定したpage(GET)の作成
 
 ### DB設計
 
