@@ -48,7 +48,7 @@ message LogInUserResponse {
 
 service AnonyService {
     rpc CreateAnonyURL (CreateAnonyURLRequest) returns (CreateAnonyURLResponse);
-    // rpc UpdateAnonyURLStatus (UpdateAnonyURLStatusRequest) returns (UpdateAnonyURLStatusResponse);
+    rpc UpdateAnonyURLStatus (UpdateAnonyURLStatusRequest) returns (UpdateAnonyURLStatusResponse);
     rpc ListAnonyURLs (ListAnonyURLsRequest) returns (ListAnonyURLsResponse);
     rpc CountAnonyURLs (google.protobuf.Empty) returns (CountAnonyURLsResponse);
 }
@@ -59,9 +59,16 @@ message CreateAnonyURLRequest {
 }
 
 message CreateAnonyURLResponse {
+    AnonyURL anony_urls = 1;
+}
+
+message UpdateAnonyURLStatusRequest {
     string original_url = 1;
-    string short_url = 2;
-    bool is_active = 3;
+    bool is_active = 2;
+}
+
+message UpdateAnonyURLStatusResponse {
+    AnonyURL anony_urls = 1;
 }
 
 message AnonyURL {

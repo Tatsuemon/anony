@@ -50,6 +50,22 @@ func (this *CreateAnonyURLRequest) Validate() error {
 	return nil
 }
 func (this *CreateAnonyURLResponse) Validate() error {
+	if this.AnonyUrls != nil {
+		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.AnonyUrls); err != nil {
+			return github_com_mwitkow_go_proto_validators.FieldError("AnonyUrls", err)
+		}
+	}
+	return nil
+}
+func (this *UpdateAnonyURLStatusRequest) Validate() error {
+	return nil
+}
+func (this *UpdateAnonyURLStatusResponse) Validate() error {
+	if this.AnonyUrls != nil {
+		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.AnonyUrls); err != nil {
+			return github_com_mwitkow_go_proto_validators.FieldError("AnonyUrls", err)
+		}
+	}
 	return nil
 }
 func (this *AnonyURL) Validate() error {

@@ -48,11 +48,12 @@ func (a *AnonyURLHandler) CreateAnonyURL(ctx context.Context, in *rpc.CreateAnon
 	}
 
 	res := &rpc.CreateAnonyURLResponse{
-		OriginalUrl: an.Original,
-		ShortUrl:    an.Short,
-		IsActive:    an.Status == 1,
+		AnonyUrls: &rpc.AnonyURL{
+			OriginalUrl: an.Original,
+			ShortUrl:    an.Short,
+			IsActive:    an.Status == 1,
+		},
 	}
-
 	return res, nil
 }
 
@@ -107,4 +108,8 @@ func (a *AnonyURLHandler) CountAnonyURLs(ctx context.Context, in *emptypb.Empty)
 		CountActive: ans.CntActiveURLs,
 	}
 	return res, nil
+}
+
+func (a *AnonyURLHandler) UpdateAnonyURLStatus(ctx context.Context, in *rpc.UpdateAnonyURLStatusRequest) (*rpc.UpdateAnonyURLStatusResponse, error) {
+	return nil, nil
 }
