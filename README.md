@@ -39,6 +39,11 @@ rpcに処理のerror内容を渡す
 
     Client側でJWTを削除
 
+- [ ] ユーザー情報の取得
+    `$ anony info`
+
+    user name, email, 登録したURLの数(そのうちactiveのものの個数)
+
 - [x] 登録APIの作成
     `$ anony create [original url]`
     original urlをshort URLに変更

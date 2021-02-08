@@ -7,16 +7,18 @@ import (
 	"github.com/Tatsuemon/anony/rpc"
 	"github.com/Tatsuemon/anony/usecase"
 	"github.com/google/uuid"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 // AnonyURLHandler implements rpc.AnonyURLService interface
 type AnonyURLHandler struct {
-	usecase usecase.AnonyURLUseCase
+	usecase         usecase.AnonyURLUseCase
+	usecaseWithUser usecase.AnonyURLWithUserUseCase
 }
 
 // NewAnonyURLHandler creates a new UserHandler
-func NewAnonyURLHandler(u usecase.AnonyURLUseCase) *AnonyURLHandler {
-	return &AnonyURLHandler{u}
+func NewAnonyURLHandler(u usecase.AnonyURLUseCase, uu usecase.AnonyURLWithUserUseCase) *AnonyURLHandler {
+	return &AnonyURLHandler{u, uu}
 }
 
 // CreateAnonyURL creates anonyURL
@@ -84,6 +86,25 @@ func (a *AnonyURLHandler) ListAnonyURLs(ctx context.Context, in *rpc.ListAnonyUR
 			ShortUrl:    v.Short,
 			IsActive:    v.Status == 1,
 		}
+	}
+	return res, nil
+}
+
+// CountAnonyURLs count user's anony urls
+func (a *AnonyURLHandler) CountAnonyURLs(ctx context.Context, in *emptypb.Empty) (*rpc.CountAnonyURLsResponse, error) {
+	userID, err := model.GetUserIDInContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ans, err := a.usecaseWithUser.CountByUser(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	res := &rpc.CountAnonyURLsResponse{
+		Name:        ans.Name,
+		Email:       ans.Email,
+		CountAll:    ans.CntURLs,
+		CountActive: ans.CntActiveURLs,
 	}
 	return res, nil
 }

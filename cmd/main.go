@@ -46,8 +46,13 @@ func main() {
 	anonyURLRepository := datastore.NewAnonyURLRepository(db.DB)
 	anonyURLService := service.NewAnonyURLService(anonyURLRepository)
 
+	userAnonyURLAccessor := datastore.NewUserAnonyURLAccessor(db.DB)
+
 	anonyURLUseCase := usecase.NewAnonyURLUseCase(anonyURLRepository, transaction, anonyURLService)
-	anonayURLHandler := handler.NewAnonyURLHandler(anonyURLUseCase)
+
+	anonyWithUserUseCase := usecase.NewAnonyURLWithUserUseCase(userAnonyURLAccessor, transaction)
+
+	anonayURLHandler := handler.NewAnonyURLHandler(anonyURLUseCase, anonyWithUserUseCase)
 
 	lis, err := net.Listen("tcp", address)
 	server := grpc.NewServer(
