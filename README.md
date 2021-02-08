@@ -56,12 +56,12 @@ rpcに処理のerror内容を渡す
 
     optionで稼働しているもののみ取得
 
-- [ ] shortURLの廃止
-    `$ anony drop [-o original_url]`
+- [x] shortURLの廃止
+    `$ anony close [original url]`
     statusを2に変更する
 
-- [ ] shortURLの復活
-    `$ anony reborn [-o orignail_url]`
+- [x] shortURLの復活
+    `$ anony open [orignail url]`
     statusを1に変更する
 
 (WEBサーバー)
