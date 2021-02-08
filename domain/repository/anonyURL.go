@@ -13,6 +13,7 @@ type AnonyURLRepository interface {
 	FindByUserID(userID string) ([]*model.AnonyURL, error)
 	FindByUserIDWithStatus(userID string, status int64) ([]*model.AnonyURL, error)
 	FindByOriginalInUser(original string, userID string) (*model.AnonyURL, error)
-	Save(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error)
-	UpdateStatus(ctx context.Context, an *model.AnonyURL) (*model.AnonyURL, error)
+	GetIDByOriginalUser(original, userID string) (string, error)
+	Save(ctx context.Context, an *model.AnonyURL, userID string) error
+	UpdateStatus(ctx context.Context, id string, status int64) error
 }
