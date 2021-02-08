@@ -55,9 +55,8 @@ func (u *anonyURLUseCase) SaveAnonyURL(ctx context.Context, an *model.AnonyURL, 
 			}
 			an.ID = au.ID
 			return u.repo.UpdateStatus(ctx, an)
-		} else {
-			return u.repo.Save(ctx, an, userID)
 		}
+		return u.repo.Save(ctx, an, userID)
 	})
 	if err != nil {
 		return nil, err
