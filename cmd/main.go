@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
+	"os"
 
 	"github.com/Tatsuemon/anony/infrastructure/middleware"
 
@@ -20,7 +22,7 @@ import (
 )
 
 func main() {
-	address := ":8080"
+	port := os.Getenv("API_PORT")
 
 	db, err := datastore.NewMysqlDB(config.DSN())
 	if err != nil {
@@ -54,7 +56,7 @@ func main() {
 
 	anonayURLHandler := handler.NewAnonyURLHandler(anonyURLUseCase, anonyWithUserUseCase)
 
-	lis, err := net.Listen("tcp", address)
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	server := grpc.NewServer(
 		grpc_middleware.WithUnaryServerChain(middleware.UnaryServerInterceptor(middleware.JWTAuth(userService))),
 	) // ここでInterceptorとか入れる
