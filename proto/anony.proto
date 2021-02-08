@@ -46,11 +46,11 @@ message LogInUserResponse {
     string token = 2;
 }
 
-
 service AnonyService {
     rpc CreateAnonyURL (CreateAnonyURLRequest) returns (CreateAnonyURLResponse);
     // rpc UpdateAnonyURLStatus (UpdateAnonyURLStatusRequest) returns (UpdateAnonyURLStatusResponse);
     rpc ListAnonyURLs (ListAnonyURLsRequest) returns (ListAnonyURLsResponse);
+    rpc CountAnonyURLs (google.protobuf.Empty) returns (CountAnonyURLsResponse);
 }
 
 message CreateAnonyURLRequest {
@@ -77,6 +77,13 @@ message ListAnonyURLsRequest {
 
 message ListAnonyURLsResponse {
     repeated AnonyURL anony_urls = 1;
+}
+
+message CountAnonyURLsResponse {
+    string name = 1;
+    string email = 2;
+    int64 count_all = 3;
+    int64 count_active = 4;
 }
 
 // message UpdateAnonyURLStatusRequest {

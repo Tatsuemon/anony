@@ -68,3 +68,6 @@ func (this *ListAnonyURLsResponse) Validate() error {
 	}
 	return nil
 }
+func (this *CountAnonyURLsResponse) Validate() error {
+	return nil
+}
