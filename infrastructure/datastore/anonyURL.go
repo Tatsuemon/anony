@@ -3,6 +3,7 @@ package datastore
 import (
 	"context"
 	"database/sql"
+	"log"
 	"time"
 
 	"github.com/Tatsuemon/anony/domain/model"
@@ -92,7 +93,18 @@ func (r anonyURLRepository) FindByOriginalInUser(original string, userID string)
 	return &res, nil
 }
 
-func (r anonyURLRepository) Save(ctx context.Context, an *model.AnonyURL, userID string) (*model.AnonyURL, error) {
+func (r anonyURLRepository) GetIDByOriginalUser(original, userID string) (string, error) {
+	var id string
+	if err := r.conn.Get(&id, "SELECT id FROM urls WHERE original = ? AND user_id = ?", original, userID); err != nil {
+		if err == sql.ErrNoRows {
+			return "", nil
+		}
+		return "", err
+	}
+	return id, nil
+}
+
+func (r anonyURLRepository) Save(ctx context.Context, an *model.AnonyURL, userID string) error {
 	// *sqlx.Tx, *sqlx.DBの両方で使用できるようにinterfaceの指定
 	var tx interface {
 		Prepare(query string) (*sql.Stmt, error)
@@ -107,7 +119,7 @@ func (r anonyURLRepository) Save(ctx context.Context, an *model.AnonyURL, userID
 	stmt, err := tx.Prepare("INSERT INTO `urls` (id, original, short, status, user_id) VALUES(?, ?, ?, ?, ?)")
 
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to datastore.AnonyURLRepository.Save()")
+		return errors.Wrap(err, "failed to datastore.AnonyURLRepository.Save()")
 	}
 
 	defer func() {
@@ -119,13 +131,13 @@ func (r anonyURLRepository) Save(ctx context.Context, an *model.AnonyURL, userID
 
 	_, err = stmt.Exec(an.ID, an.Original, an.Short, an.Status, userID)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to datastore.AnonyURLRepository.Save()")
+		return errors.Wrap(err, "failed to datastore.AnonyURLRepository.Save()")
 	}
 
-	return an, nil
+	return nil
 }
 
-func (r anonyURLRepository) UpdateStatus(ctx context.Context, an *model.AnonyURL) (*model.AnonyURL, error) {
+func (r anonyURLRepository) UpdateStatus(ctx context.Context, id string, status int64) error {
 	// *sqlx.Tx, *sqlx.DBの両方で使用できるようにinterfaceの指定
 	var tx interface {
 		Prepare(query string) (*sql.Stmt, error)
@@ -137,10 +149,11 @@ func (r anonyURLRepository) UpdateStatus(ctx context.Context, an *model.AnonyURL
 		tx = r.conn // context.Contextに存在しない場合は, repositoryの*sqlx.DBを使用
 	}
 
-	stmt, err := tx.Prepare("UPDATE `urls` SET status = ? WHERE id = ?")
+	stmt, err := tx.Prepare("UPDATE `urls` SET status = ? WHERE id = ?;")
 
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to datastore.AnonyURLRepository.UpdateStatus()")
+		log.Println(err)
+		return errors.Wrap(err, "failed to datastore.AnonyURLRepository.UpdateStatus()")
 	}
 
 	defer func() {
@@ -150,9 +163,9 @@ func (r anonyURLRepository) UpdateStatus(ctx context.Context, an *model.AnonyURL
 		}
 	}()
 
-	_, err = stmt.Exec(an.Status, an.ID)
+	_, err = stmt.Exec(status, id)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to datastore.AnonyURLRepository.UpdateStatus()")
+		return errors.Wrap(err, "failed to datastore.AnonyURLRepository.UpdateStatus()")
 	}
-	return an, nil
+	return nil
 }

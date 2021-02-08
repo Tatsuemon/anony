@@ -23,6 +23,11 @@ func NewAnonyURLHandler(u usecase.AnonyURLUseCase, uu usecase.AnonyURLWithUserUs
 
 // CreateAnonyURL creates anonyURL
 func (a *AnonyURLHandler) CreateAnonyURL(ctx context.Context, in *rpc.CreateAnonyURLRequest) (*rpc.CreateAnonyURLResponse, error) {
+	userID, err := model.GetUserIDInContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	ori := in.GetOriginalUrl()
 	isActive := in.GetIsActive()
 	var status int64
@@ -31,12 +36,6 @@ func (a *AnonyURLHandler) CreateAnonyURL(ctx context.Context, in *rpc.CreateAnon
 	} else {
 		status = 2
 	}
-
-	userID, err := model.GetUserIDInContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-
 	su, err := a.usecase.CreateAnonyURL(ctx, userID)
 	if err != nil {
 		return nil, err
@@ -48,11 +47,12 @@ func (a *AnonyURLHandler) CreateAnonyURL(ctx context.Context, in *rpc.CreateAnon
 	}
 
 	res := &rpc.CreateAnonyURLResponse{
-		OriginalUrl: an.Original,
-		ShortUrl:    an.Short,
-		IsActive:    an.Status == 1,
+		AnonyUrls: &rpc.AnonyURL{
+			OriginalUrl: an.Original,
+			ShortUrl:    an.Short,
+			IsActive:    an.Status == 1,
+		},
 	}
-
 	return res, nil
 }
 
@@ -105,6 +105,34 @@ func (a *AnonyURLHandler) CountAnonyURLs(ctx context.Context, in *emptypb.Empty)
 		Email:       ans.Email,
 		CountAll:    ans.CntURLs,
 		CountActive: ans.CntActiveURLs,
+	}
+	return res, nil
+}
+
+// UpdateAnonyURLStatus change status of AnonyURL
+func (a *AnonyURLHandler) UpdateAnonyURLStatus(ctx context.Context, in *rpc.UpdateAnonyURLStatusRequest) (*rpc.UpdateAnonyURLStatusResponse, error) {
+	userID, err := model.GetUserIDInContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ori := in.GetOriginalUrl()
+	isActive := in.GetIsActive()
+	var status int64
+	if isActive {
+		status = 1
+	} else {
+		status = 2
+	}
+	ans, err := a.usecase.UpdateAnonyURLStatus(ctx, ori, userID, status)
+	if err != nil {
+		return nil, err
+	}
+	res := &rpc.UpdateAnonyURLStatusResponse{
+		AnonyUrl: &rpc.AnonyURL{
+			OriginalUrl: ans.Original,
+			ShortUrl:    ans.Short,
+			IsActive:    ans.Status == 1,
+		},
 	}
 	return res, nil
 }

@@ -56,9 +56,13 @@ rpcに処理のerror内容を渡す
 
     optionで稼働しているもののみ取得
 
-- [ ] shortURLのはいし
-    `$ anony drop [-u original_url] [-i url_id]`
-    statusの変更
+- [x] shortURLの廃止
+    `$ anony close [original url]`
+    statusを2に変更する
+
+- [x] shortURLの復活
+    `$ anony open [orignail url]`
+    statusを1に変更する
 
 (WEBサーバー)
 - [ ] locationを指定したpage(GET)の作成
