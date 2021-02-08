@@ -61,9 +61,9 @@ func (this *UpdateAnonyURLStatusRequest) Validate() error {
 	return nil
 }
 func (this *UpdateAnonyURLStatusResponse) Validate() error {
-	if this.AnonyUrls != nil {
-		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.AnonyUrls); err != nil {
-			return github_com_mwitkow_go_proto_validators.FieldError("AnonyUrls", err)
+	if this.AnonyUrl != nil {
+		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.AnonyUrl); err != nil {
+			return github_com_mwitkow_go_proto_validators.FieldError("AnonyUrl", err)
 		}
 	}
 	return nil

@@ -68,7 +68,7 @@ message UpdateAnonyURLStatusRequest {
 }
 
 message UpdateAnonyURLStatusResponse {
-    AnonyURL anony_urls = 1;
+    AnonyURL anony_url = 1;
 }
 
 message AnonyURL {
