@@ -29,3 +29,7 @@ prepare-test-db:
 
 test:
 	docker-compose -f docker-compose.test.yml run app-test go test -v ./...
+
+coverage:
+	docker-compose -f docker-compose.test.yml run app-test go test -coverprofile=cover.out ./...
+	go tool cover -html=cover.out

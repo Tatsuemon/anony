@@ -1,53 +1,13 @@
 package service
 
 import (
-	"context"
 	"fmt"
 	"reflect"
 	"testing"
 
 	"github.com/Tatsuemon/anony/domain/model"
+	"github.com/Tatsuemon/anony/testutils"
 )
-
-type userRepositoryMock struct {
-	FakeFindAll             func() ([]*model.User, error)
-	FakeFindByID            func(id string) (*model.User, error)
-	FakeFindByName          func(name string) (*model.User, error)
-	FakeFindByEmail         func(email string) (*model.User, error)
-	FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
-	FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-	FakeSave                func(ctx context.Context, user *model.User) (*model.User, error)
-	FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
-	FakeDelete              func(ctx context.Context, user *model.User) error
-}
-
-func (m userRepositoryMock) FindAll() ([]*model.User, error) {
-	return m.FakeFindAll()
-}
-func (m userRepositoryMock) FindByID(id string) (*model.User, error) {
-	return m.FakeFindByID(id)
-}
-func (m userRepositoryMock) FindByName(name string) (*model.User, error) {
-	return m.FakeFindByName(name)
-}
-func (m userRepositoryMock) FindByEmail(email string) (*model.User, error) {
-	return m.FakeFindByEmail(email)
-}
-func (m userRepositoryMock) FindByNameOrEmail(namrOrEmail string) (*model.User, error) {
-	return m.FakeFindByNameOrEmail(namrOrEmail)
-}
-func (m userRepositoryMock) FindDuplicatedUsers(name, email string) ([]*model.User, error) {
-	return m.FakeFindDuplicatedUsers(name, email)
-}
-func (m userRepositoryMock) Save(ctx context.Context, user *model.User) (*model.User, error) {
-	return m.FakeSave(ctx, user)
-}
-func (m userRepositoryMock) Update(ctx context.Context, user *model.User) (*model.User, error) {
-	return m.FakeUpdate(ctx, user)
-}
-func (m userRepositoryMock) Delete(ctx context.Context, user *model.User) error {
-	return m.FakeDelete(ctx, user)
-}
 
 func TestNewUserService(t *testing.T) {
 	tests := []struct {
@@ -56,11 +16,11 @@ func TestNewUserService(t *testing.T) {
 	}{
 		{
 			name: "NORMAL: NewUserService",
-			want: &userService{userRepositoryMock{}},
+			want: &userService{testutils.UserRepoMock{}},
 		},
 	}
 	for _, tt := range tests {
-		repo := userRepositoryMock{}
+		repo := testutils.UserRepoMock{}
 		t.Run(tt.name, func(t *testing.T) {
 			if got := NewUserService(repo); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewUserService() = %v, want %v", got, tt.want)
@@ -71,15 +31,7 @@ func TestNewUserService(t *testing.T) {
 
 func Test_userService_ExistsID(t *testing.T) {
 	type mocks struct {
-		// FakeFindAll             func() ([]*model.User, error)
 		FakeFindByID func(id string) (*model.User, error)
-		// FakeFindByName          func(name string) (*model.User, error)
-		// FakeFindByEmail         func(email string) (*model.User, error)
-		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
-		// FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-		// FakeSave               func(ctx context.Context, user *model.User) (*model.User, error)
-		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
-		// FakeDelete              func(ctx context.Context, user *model.User) error
 	}
 	type args struct {
 		id string
@@ -107,6 +59,19 @@ func Test_userService_ExistsID(t *testing.T) {
 				},
 			},
 			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "NORMAL: userがnilの場合",
+			args: args{
+				id: "id",
+			},
+			mocks: mocks{
+				FakeFindByID: func(id string) (*model.User, error) {
+					return nil, nil
+				},
+			},
+			want:    false,
 			wantErr: false,
 		},
 		{
@@ -144,7 +109,7 @@ func Test_userService_ExistsID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			u := &userService{
-				UserRepository: userRepositoryMock{
+				UserRepository: testutils.UserRepoMock{
 					FakeFindByID: tt.mocks.FakeFindByID,
 				},
 			}
@@ -162,15 +127,7 @@ func Test_userService_ExistsID(t *testing.T) {
 
 func Test_userService_ExistsName(t *testing.T) {
 	type mocks struct {
-		// FakeFindAll             func() ([]*model.User, error)
-		// FakeFindByID            func(id string) (*model.User, error)
 		FakeFindByName func(name string) (*model.User, error)
-		// FakeFindByEmail         func(email string) (*model.User, error)
-		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
-		// FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-		// FakeSave               func(ctx context.Context, user *model.User) (*model.User, error)
-		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
-		// FakeDelete              func(ctx context.Context, user *model.User) error
 	}
 	type args struct {
 		name string
@@ -201,6 +158,19 @@ func Test_userService_ExistsName(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "NORMAL: userがnilの場合",
+			args: args{
+				name: "name",
+			},
+			mocks: mocks{
+				FakeFindByName: func(name string) (*model.User, error) {
+					return nil, nil
+				},
+			},
+			want:    false,
+			wantErr: false,
+		},
+		{
 			name: "ERROR: userRepository.FindByNameでErrorを返す場合",
 			args: args{
 				name: "name",
@@ -235,7 +205,7 @@ func Test_userService_ExistsName(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			u := &userService{
-				UserRepository: userRepositoryMock{
+				UserRepository: testutils.UserRepoMock{
 					FakeFindByName: tt.mocks.FakeFindByName,
 				},
 			}
@@ -253,15 +223,7 @@ func Test_userService_ExistsName(t *testing.T) {
 
 func Test_userService_ExistsEmail(t *testing.T) {
 	type mocks struct {
-		// FakeFindAll             func() ([]*model.User, error)
-		// FakeFindByID            func(id string) (*model.User, error)
-		// FakeFindByName          func(name string) (*model.User, error)
 		FakeFindByEmail func(email string) (*model.User, error)
-		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
-		// FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-		// FakeSave               func(ctx context.Context, user *model.User) (*model.User, error)
-		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
-		// FakeDelete              func(ctx context.Context, user *model.User) error
 	}
 	type args struct {
 		email string
@@ -289,6 +251,19 @@ func Test_userService_ExistsEmail(t *testing.T) {
 				},
 			},
 			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "NORMAL: userがnilの場合",
+			args: args{
+				email: "email",
+			},
+			mocks: mocks{
+				FakeFindByEmail: func(email string) (*model.User, error) {
+					return nil, nil
+				},
+			},
+			want:    false,
 			wantErr: false,
 		},
 		{
@@ -326,7 +301,7 @@ func Test_userService_ExistsEmail(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			u := &userService{
-				UserRepository: userRepositoryMock{
+				UserRepository: testutils.UserRepoMock{
 					FakeFindByEmail: tt.mocks.FakeFindByEmail,
 				},
 			}
@@ -344,15 +319,7 @@ func Test_userService_ExistsEmail(t *testing.T) {
 
 func Test_userService_ExistsDuplicatedUser(t *testing.T) {
 	type mocks struct {
-		// FakeFindAll             func() ([]*model.User, error)
-		// FakeFindByID            func(id string) (*model.User, error)
-		// FakeFindByName          func(name string) (*model.User, error)
-		// FakeFindByEmail         func(email string) (*model.User, error)
-		// FakeFindByNameOrEmail   func(nameOrEmail string) (*model.User, error)
 		FakeFindDuplicatedUsers func(name, email string) ([]*model.User, error)
-		// FakeSave               func(ctx context.Context, user *model.User) (*model.User, error)
-		// FakeUpdate              func(ctx context.Context, user *model.User) (*model.User, error)
-		// FakeDelete              func(ctx context.Context, user *model.User) error
 	}
 	type args struct {
 		name  string
@@ -418,7 +385,7 @@ func Test_userService_ExistsDuplicatedUser(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			u := &userService{
-				UserRepository: userRepositoryMock{
+				UserRepository: testutils.UserRepoMock{
 					FakeFindDuplicatedUsers: tt.mocks.FakeFindDuplicatedUsers,
 				},
 			}

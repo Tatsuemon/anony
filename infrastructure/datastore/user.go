@@ -3,6 +3,7 @@ package datastore
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/Tatsuemon/anony/domain/model"
 	"github.com/Tatsuemon/anony/domain/repository"
@@ -67,6 +68,9 @@ func (r userRepository) FindByNameOrEmail(nameOrEmail string) (*model.User, erro
 
 	nstmt, err := r.conn.PrepareNamed("SELECT id, name, email, password FROM users WHERE name = :nameOrEmail OR email = :nameOrEmail")
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("Wrong name or email, password")
+		}
 		return nil, err
 	}
 	if err := nstmt.Get(&user, params); err != nil {
@@ -90,7 +94,7 @@ func (r userRepository) FindDuplicatedUsers(name, email string) ([]*model.User, 
 	return users, nil
 }
 
-func (r userRepository) Save(ctx context.Context, user *model.User) (*model.User, error) {
+func (r userRepository) Save(ctx context.Context, user *model.User) error {
 	// *sqlx.Tx, *sqlx.DBの両方で使用できるようにinterfaceの指定
 	var tx interface {
 		Prepare(query string) (*sql.Stmt, error)
@@ -103,27 +107,23 @@ func (r userRepository) Save(ctx context.Context, user *model.User) (*model.User
 	}
 
 	stmt, err := tx.Prepare("INSERT INTO `users` (id, name, email, password) VALUES(?, ?, ?, ?)")
-
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to datastore.userRepository.Save()")
+		return errors.Wrap(err, "failed to datastore.userRepository.Save()")
 	}
-
 	defer func() {
 		if closeErr := stmt.Close(); closeErr != nil {
 			// TODO(Tatseumon): 挙動確認
 			err = closeErr
 		}
 	}()
-
 	_, err = stmt.Exec(user.ID, user.Name, user.Email, user.EncryptedPass)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to datastore.userRepository.Save()")
+		return errors.Wrap(err, "failed to datastore.userRepository.Save()")
 	}
-
-	return user, nil
+	return nil
 }
 
-func (r userRepository) Update(ctx context.Context, user *model.User) (*model.User, error) {
+func (r userRepository) Update(ctx context.Context, user *model.User) error {
 	var tx interface {
 		Prepare(query string) (*sql.Stmt, error)
 	}
@@ -136,7 +136,7 @@ func (r userRepository) Update(ctx context.Context, user *model.User) (*model.Us
 	stmt, err := tx.Prepare("UPDATE `users` SET name = ?, email = ?, password = ? WHERE id = ?")
 
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to datastore.userRepository.Update()")
+		return errors.Wrap(err, "failed to datastore.userRepository.Update()")
 	}
 
 	defer func() {
@@ -148,10 +148,10 @@ func (r userRepository) Update(ctx context.Context, user *model.User) (*model.Us
 
 	_, err = stmt.Exec(user.Name, user.Email, user.EncryptedPass, user.ID)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to datastore.userRepository.Update()")
+		return errors.Wrap(err, "failed to datastore.userRepository.Update()")
 	}
 
-	return user, nil
+	return nil
 }
 func (r userRepository) Delete(ctx context.Context, user *model.User) error {
 	var tx interface {

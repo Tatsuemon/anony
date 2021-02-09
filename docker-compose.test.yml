@@ -22,6 +22,8 @@ services:
     depends_on: 
       - db-test
     entrypoint: "dockerize -timeout 60s -wait tcp://db-test:3306"
+    volumes:
+      - ./:/go/src/github.com/Tatsuemon/anony
   db-test:
     image: mysql:8.0
     container_name: anony-db-test

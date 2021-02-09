@@ -85,12 +85,18 @@ func (u *anonyURLUseCase) SaveAnonyURL(ctx context.Context, an *model.AnonyURL, 
 }
 
 func (u *anonyURLUseCase) UpdateAnonyURLStatus(ctx context.Context, original, userID string, status int64) (*model.AnonyURL, error) {
+	if status < 1 || status > 2 {
+		return nil, fmt.Errorf("status is out of range")
+	}
 	var id string
 	_, err := u.transaction.DoInTx(ctx, func(ctx context.Context) (interface{}, error) {
 		aid, err := u.repo.GetIDByOriginalUser(original, userID)
 		id = aid
 		if err != nil {
 			return nil, err
+		}
+		if id == "" {
+			return nil, fmt.Errorf("this anonyURL is not existed")
 		}
 		return nil, u.repo.UpdateStatus(ctx, id, status)
 	})
@@ -118,6 +124,12 @@ func (u *anonyURLUseCase) ListAnonyURLs(ctx context.Context, userID string, q in
 func (u *anonyURLUseCase) GetOriginalByAnonyURL(ctx context.Context, anonyURL string) (string, error) {
 	an, err := u.repo.FindByAnonyURL(anonyURL)
 	if err != nil {
+		return "", err
+	}
+	if an == nil {
+		return "", nil
+	}
+	if an.Status != 1 {
 		return "", nil
 	}
 	return an.Original, nil
