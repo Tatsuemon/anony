@@ -26,7 +26,11 @@ func (h *httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	original, err := h.AnonyURLUseCase.GetOriginalByAnonyURL(context.Background(), anURL)
 	if err != nil {
-		// TODO(Tatsuemon): errorの時の処理
+		http.NotFound(w, r)
+		return
+	}
+	if original == "" {
+		http.NotFound(w, r)
 		return
 	}
 
