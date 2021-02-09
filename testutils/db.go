@@ -41,7 +41,7 @@ func GetTestDB() *datastore.MysqlDB {
 	return testDB
 }
 
-// TODO(Tatsuemon): テスト用DBに関することをかく
+// User
 
 // InsertUserData inserts user data
 func InsertUserData() {
@@ -76,6 +76,52 @@ func ClearUserData() {
 func CountUserData() int {
 	var count int
 	row := testDB.DB.QueryRow("SELECT COUNT(*) FROM users")
+	err := row.Scan(&count)
+	if err != nil {
+		panic(err)
+	}
+	return count
+}
+
+// AnonyURL
+type urls struct {
+	ID       string
+	Original string
+	Short    string
+	Status   int64
+	UserID   string
+}
+
+// InsertURLData inserts url data
+func InsertURLData() {
+	InsertUserData()
+	urls := []urls{
+		{ID: "id1", Original: "original1", Short: "short1", Status: 1, UserID: "id1"},
+		{ID: "id2", Original: "original2", Short: "short2", Status: 1, UserID: "id1"},
+		{ID: "id3", Original: "original3", Short: "short3", Status: 2, UserID: "id1"},
+		{ID: "id4", Original: "original4", Short: "short4", Status: 2, UserID: "id1"},
+		{ID: "id5", Original: "original5", Short: "short5", Status: 2, UserID: "id1"},
+	}
+	for _, p := range urls {
+		_, err := testDB.DB.Exec("INSERT INTO urls (id, original, short, status, user_id) values (?, ?, ?, ?, ?)", p.ID, p.Original, p.Short, p.Status, p.UserID)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+// ClearURLData clears urls data
+func ClearURLData() {
+	_, err := testDB.DB.Exec("DELETE FROM urls")
+	if err != nil {
+		panic(err)
+	}
+}
+
+// CountURLData counts urls data
+func CountURLData() int {
+	var count int
+	row := testDB.DB.QueryRow("SELECT COUNT(*) FROM urls")
 	err := row.Scan(&count)
 	if err != nil {
 		panic(err)
