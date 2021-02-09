@@ -92,6 +92,9 @@ func (u *anonyURLUseCase) UpdateAnonyURLStatus(ctx context.Context, original, us
 		if err != nil {
 			return nil, err
 		}
+		if id == "" {
+			return nil, fmt.Errorf("anonyURL is not existed")
+		}
 		return nil, u.repo.UpdateStatus(ctx, id, status)
 	})
 	if err != nil {
@@ -118,6 +121,12 @@ func (u *anonyURLUseCase) ListAnonyURLs(ctx context.Context, userID string, q in
 func (u *anonyURLUseCase) GetOriginalByAnonyURL(ctx context.Context, anonyURL string) (string, error) {
 	an, err := u.repo.FindByAnonyURL(anonyURL)
 	if err != nil {
+		return "", err
+	}
+	if an == nil {
+		return "", nil
+	}
+	if an.Status != 1 {
 		return "", nil
 	}
 	return an.Original, nil
