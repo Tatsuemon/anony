@@ -7,11 +7,10 @@ import (
 	"testing"
 
 	"github.com/Tatsuemon/anony/domain/model"
+	"github.com/Tatsuemon/anony/domain/service"
 	"github.com/Tatsuemon/anony/infrastructure/datastore"
 	"github.com/Tatsuemon/anony/testutils"
 )
-
-// TODO(Tatsuemon): transactionレベルでTestDBにつないで, 値をみてみる必要あり
 
 func TestNewUserUseCase(t *testing.T) {
 	db := testutils.GetTestDB().DB
@@ -488,6 +487,28 @@ func Test_userUseCase_UpdateUser(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "ERROR: ユーザーのバリデーションに引っかかる場合",
+			args: args{
+				ctx: context.Background(),
+				user: &model.User{
+					ID:            "id",
+					Name:          "",
+					Email:         "email",
+					EncryptedPass: "password",
+				},
+			},
+			repoMocks: repoMocks{
+				FakeFindByID: func(id string) (*model.User, error) {
+					return nil, fmt.Errorf("error")
+				},
+				FakeUpdate: func(ctx context.Context, user *model.User) error {
+					return nil
+				},
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
 			name: "ERROR: FindByIDがErrorを返す",
 			args: args{
 				ctx: context.Background(),
@@ -657,7 +678,312 @@ func Test_userUseCase_DeleteUser(t *testing.T) {
 }
 
 // Test With DB
+func SetUserUseCase() UserUseCase {
+	db := testutils.GetTestDB().DB
+	transaction := datastore.NewTransaction(db)
+	repository := datastore.NewUserRepository(db)
+	service := service.NewUserService(repository)
+	return NewUserUseCase(repository, transaction, service)
+}
 
-// func Test_userUseCase_CreateUser_DB(t *testing.T) {
+func Test_userUseCase_CreateUser_DB(t *testing.T) {
+	u := SetUserUseCase()
+	type args struct {
+		ctx  context.Context
+		user *model.User
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *model.User
+		saved   bool
+		wantErr bool
+	}{
+		{
+			name: "NORMAL: ユーザーを登録できる",
+			args: args{
+				ctx: context.Background(),
+				user: &model.User{
+					ID:            "id",
+					Name:          "name",
+					Email:         "email",
+					EncryptedPass: "password",
+				},
+			},
+			want: &model.User{
+				ID:    "id",
+				Name:  "name",
+				Email: "email", // passwordは返さないようにしている
+			},
+			saved:   true,
+			wantErr: false,
+		},
+		{
+			name: "ERROR: IDが重複した場合は登録できない",
+			args: args{
+				ctx: context.Background(),
+				user: &model.User{
+					ID:            "id1",
+					Name:          "name",
+					Email:         "email",
+					EncryptedPass: "password",
+				},
+			},
+			want:    nil,
+			saved:   false,
+			wantErr: true,
+		},
+		{
+			name: "ERROR: Userのバリデーションに引っかかる時も登録できない",
+			args: args{
+				ctx: context.Background(),
+				user: &model.User{
+					ID:            "id",
+					Name:          "",
+					Email:         "email",
+					EncryptedPass: "password",
+				},
+			},
+			want:    nil,
+			saved:   false,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testutils.ClearUserData()
+			testutils.InsertUserData()
+			bCount := testutils.CountUserData()
+			got, err := u.CreateUser(tt.args.ctx, tt.args.user)
+			aCount := testutils.CountUserData()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("userUseCase.CreateUser() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if (aCount-bCount == 1) != tt.saved {
+				t.Errorf("userUseCase.CreateUser() before Count = %v, after Count = %v, saved: %v", bCount, aCount, tt.saved)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("userUseCase.CreateUser() = %v, want %v", got, tt.want)
+			}
+			testutils.ClearUserData()
+		})
+	}
+}
 
-// }
+func Test_userUseCase_VerifyByNameOrEmailPass_DB(t *testing.T) {
+	u := SetUserUseCase()
+	type args struct {
+		ctx         context.Context
+		nameOrEmail string
+		password    string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *model.User
+		wantErr bool
+	}{
+		{
+			name: "NORMAL: NameOrEmailがDBに存在して, パスワードが正解である(nameで検索)",
+			args: args{
+				ctx:         context.Background(),
+				nameOrEmail: "name1",
+				password:    "password1",
+			},
+			want: &model.User{
+				ID:    "id1",
+				Name:  "name1",
+				Email: "email1",
+			},
+			wantErr: false,
+		},
+		{
+			name: "NORMAL: NameOrEmailがDBに存在して, パスワードが正解である(emailで検索)",
+			args: args{
+				ctx:         context.Background(),
+				nameOrEmail: "email1",
+				password:    "password1",
+			},
+			want: &model.User{
+				ID:    "id1",
+				Name:  "name1",
+				Email: "email1",
+			},
+			wantErr: false,
+		},
+		{
+			name: "ERROR: NameOrEmailがDBに存在しない場合",
+			args: args{
+				ctx:         context.Background(),
+				nameOrEmail: "email",
+				password:    "password",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "ERROR: NameOrEmailがDBに存在するが, パスワードが異なる場合",
+			args: args{
+				ctx:         context.Background(),
+				nameOrEmail: "email1",
+				password:    "password",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testutils.ClearUserData()
+			testutils.InsertUserData()
+			got, err := u.VerifyByNameOrEmailPass(tt.args.ctx, tt.args.nameOrEmail, tt.args.password)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("userUseCase.VerifyByNameOrEmailPass() error = %v, wantErr %v", err, tt.wantErr)
+				testutils.ClearUserData()
+				return
+			}
+			if tt.wantErr {
+				return
+			}
+			if (got.ID != tt.want.ID) || (got.Name != tt.want.Name) || (got.Email != tt.want.Email) {
+				t.Errorf("userUseCase.VerifyByNameOrEmailPass() = %v, want %v", got, tt.want)
+			}
+			testutils.ClearUserData()
+		})
+	}
+}
+
+func Test_userUseCase_UpdateUser_DB(t *testing.T) {
+	u := SetUserUseCase()
+	type args struct {
+		ctx  context.Context
+		user *model.User
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *model.User
+		wantErr bool
+	}{
+		{
+			name: "NORMAL: ユーザーを更新できる, IDは更新したいもののIDである必要あり",
+			args: args{
+				ctx: context.Background(),
+				user: &model.User{
+					ID:            "id1",
+					Name:          "name",
+					Email:         "email",
+					EncryptedPass: "password",
+				},
+			},
+			want: &model.User{
+				ID:    "id1",
+				Name:  "name",
+				Email: "email", // passwordは返さないようにしている
+			},
+			wantErr: false,
+		},
+		{
+			name: "ERROR: IDがDBに存在しない場合は, 更新できない",
+			args: args{
+				ctx: context.Background(),
+				user: &model.User{
+					ID:            "id",
+					Name:          "name",
+					Email:         "email",
+					EncryptedPass: "password",
+				},
+			},
+			want:    nil,
+			wantErr: false, // FindByIDでは, 存在しないときは, error = nilを返す
+		},
+		{
+			name: "ERROR: Userのバリデーションに引っかかると更新できない",
+			args: args{
+				ctx: context.Background(),
+				user: &model.User{
+					ID:            "id",
+					Name:          "",
+					Email:         "email",
+					EncryptedPass: "password",
+				},
+			},
+			want:    nil,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testutils.ClearUserData()
+			testutils.InsertUserData()
+			bCount := testutils.CountUserData()
+			got, err := u.UpdateUser(tt.args.ctx, tt.args.user)
+			aCount := testutils.CountUserData()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("userUseCase.UpdateUser() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if aCount != bCount {
+				t.Errorf("userUseCase.UpdateUser() before Count = %v, after Count = %v", bCount, aCount)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("userUseCase.UpdateUser() = %v, want %v", got, tt.want)
+			}
+			testutils.ClearUserData()
+		})
+	}
+}
+
+func Test_userUseCase_DeleteUser_DB(t *testing.T) {
+	u := SetUserUseCase()
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		deleted bool
+		wantErr bool
+	}{
+		{
+			name: "NORMAL: ユーザーを削除できる",
+			args: args{
+				ctx: context.Background(),
+				id:  "id1",
+			},
+			deleted: true,
+			wantErr: false,
+		},
+		{
+			name: "ERROR: IDがDBに存在しない場合は, 削除できない",
+			args: args{
+				ctx: context.Background(),
+				id:  "id",
+			},
+			deleted: false,
+			wantErr: false, // FindByIDでは, 存在しないときは, error = nilを返す
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testutils.ClearUserData()
+			testutils.InsertUserData()
+			bCount := testutils.CountUserData()
+			err := u.DeleteUser(tt.args.ctx, tt.args.id)
+			aCount := testutils.CountUserData()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("userUseCase.DeleteUser() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if (bCount-aCount == 1) != tt.deleted {
+				t.Errorf("userUseCase.DeleteUser() before Count = %v, after Count = %v", bCount, aCount)
+				return
+			}
+			testutils.ClearUserData()
+		})
+	}
+}

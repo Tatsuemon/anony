@@ -46,3 +46,40 @@ func (m UserRepoMock) Update(ctx context.Context, user *model.User) error {
 func (m UserRepoMock) Delete(ctx context.Context, user *model.User) error {
 	return m.FakeDelete(ctx, user)
 }
+
+// AnonyURLRepoMock is mock of anonyURLRepository
+type AnonyURLRepoMock struct {
+	FakeFindByID               func(id string) (*model.AnonyURL, error)
+	FakeFindByUserID           func(userID string) ([]*model.AnonyURL, error)
+	FakeFindByUserIDWithStatus func(userID string, status int64) ([]*model.AnonyURL, error)
+	FakeFindByOriginalInUser   func(original string, userID string) (*model.AnonyURL, error)
+	FakeFindByAnonyURL         func(anonyURL string) (*model.AnonyURL, error)
+	FakeGetIDByOriginalUser    func(original, userID string) (string, error)
+	FakeSave                   func(ctx context.Context, an *model.AnonyURL, userID string) error
+	FakeUpdateStatus           func(ctx context.Context, id string, status int64) error
+}
+
+func (a AnonyURLRepoMock) FindByID(id string) (*model.AnonyURL, error) {
+	return a.FakeFindByID(id)
+}
+func (a AnonyURLRepoMock) FindByUserID(userID string) ([]*model.AnonyURL, error) {
+	return a.FakeFindByUserID(userID)
+}
+func (a AnonyURLRepoMock) FindByUserIDWithStatus(userID string, status int64) ([]*model.AnonyURL, error) {
+	return a.FakeFindByUserIDWithStatus(userID, status)
+}
+func (a AnonyURLRepoMock) FindByOriginalInUser(original string, userID string) (*model.AnonyURL, error) {
+	return a.FakeFindByOriginalInUser(original, userID)
+}
+func (a AnonyURLRepoMock) FindByAnonyURL(anonyURL string) (*model.AnonyURL, error) {
+	return a.FakeFindByAnonyURL(anonyURL)
+}
+func (a AnonyURLRepoMock) GetIDByOriginalUser(original, userID string) (string, error) {
+	return a.FakeGetIDByOriginalUser(original, userID)
+}
+func (a AnonyURLRepoMock) Save(ctx context.Context, an *model.AnonyURL, userID string) error {
+	return a.FakeSave(ctx, an, userID)
+}
+func (a AnonyURLRepoMock) UpdateStatus(ctx context.Context, id string, status int64) error {
+	return a.FakeUpdateStatus(ctx, id, status)
+}

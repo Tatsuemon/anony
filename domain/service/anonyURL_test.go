@@ -1,49 +1,13 @@
 package service
 
 import (
-	"context"
 	"fmt"
 	"reflect"
 	"testing"
 
 	"github.com/Tatsuemon/anony/domain/model"
+	"github.com/Tatsuemon/anony/testutils"
 )
-
-type anonyURLRepoMock struct {
-	FakeFindByID               func(id string) (*model.AnonyURL, error)
-	FakeFindByUserID           func(userID string) ([]*model.AnonyURL, error)
-	FakeFindByUserIDWithStatus func(userID string, status int64) ([]*model.AnonyURL, error)
-	FakeFindByOriginalInUser   func(original string, userID string) (*model.AnonyURL, error)
-	FakeFindByAnonyURL         func(anonyURL string) (*model.AnonyURL, error)
-	FakeGetIDByOriginalUser    func(original, userID string) (string, error)
-	FakeSave                   func(ctx context.Context, an *model.AnonyURL, userID string) error
-	FakeUpdateStatus           func(ctx context.Context, id string, status int64) error
-}
-
-func (a anonyURLRepoMock) FindByID(id string) (*model.AnonyURL, error) {
-	return a.FakeFindByID(id)
-}
-func (a anonyURLRepoMock) FindByUserID(userID string) ([]*model.AnonyURL, error) {
-	return a.FakeFindByUserID(userID)
-}
-func (a anonyURLRepoMock) FindByUserIDWithStatus(userID string, status int64) ([]*model.AnonyURL, error) {
-	return a.FakeFindByUserIDWithStatus(userID, status)
-}
-func (a anonyURLRepoMock) FindByOriginalInUser(original string, userID string) (*model.AnonyURL, error) {
-	return a.FakeFindByOriginalInUser(original, userID)
-}
-func (a anonyURLRepoMock) FindByAnonyURL(anonyURL string) (*model.AnonyURL, error) {
-	return a.FakeFindByAnonyURL(anonyURL)
-}
-func (a anonyURLRepoMock) GetIDByOriginalUser(original, userID string) (string, error) {
-	return a.FakeGetIDByOriginalUser(original, userID)
-}
-func (a anonyURLRepoMock) Save(ctx context.Context, an *model.AnonyURL, userID string) error {
-	return a.FakeSave(ctx, an, userID)
-}
-func (a anonyURLRepoMock) UpdateStatus(ctx context.Context, id string, status int64) error {
-	return a.FakeUpdateStatus(ctx, id, status)
-}
 
 func TestNewAnonyURLService(t *testing.T) {
 	tests := []struct {
@@ -52,11 +16,11 @@ func TestNewAnonyURLService(t *testing.T) {
 	}{
 		{
 			name: "NORMAL: NewAnonyURLService",
-			want: &anonyURLService{anonyURLRepoMock{}},
+			want: &anonyURLService{testutils.AnonyURLRepoMock{}},
 		},
 	}
 	for _, tt := range tests {
-		repo := anonyURLRepoMock{}
+		repo := testutils.AnonyURLRepoMock{}
 		t.Run(tt.name, func(t *testing.T) {
 			if got := NewAnonyURLService(repo); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewAnonyURLService() = %v, want %v", got, tt.want)
@@ -127,7 +91,7 @@ func Test_anonyURLService_ExistID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			a := &anonyURLService{
-				repo: anonyURLRepoMock{
+				repo: testutils.AnonyURLRepoMock{
 					FakeFindByID: tt.mocks.FakeFindByID,
 				},
 			}
@@ -209,7 +173,7 @@ func Test_anonyURLService_ExistOriginalInUser(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			a := &anonyURLService{
-				repo: anonyURLRepoMock{
+				repo: testutils.AnonyURLRepoMock{
 					FakeFindByOriginalInUser: tt.mocks.FakeFindByOriginalInUser,
 				},
 			}

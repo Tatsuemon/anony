@@ -62,6 +62,19 @@ func Test_userService_ExistsID(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "NORMAL: userがnilの場合",
+			args: args{
+				id: "id",
+			},
+			mocks: mocks{
+				FakeFindByID: func(id string) (*model.User, error) {
+					return nil, nil
+				},
+			},
+			want:    false,
+			wantErr: false,
+		},
+		{
 			name: "ERROR: userRepository.FindByIDでエラーを返す",
 			args: args{
 				id: "id",
@@ -145,6 +158,19 @@ func Test_userService_ExistsName(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "NORMAL: userがnilの場合",
+			args: args{
+				name: "name",
+			},
+			mocks: mocks{
+				FakeFindByName: func(name string) (*model.User, error) {
+					return nil, nil
+				},
+			},
+			want:    false,
+			wantErr: false,
+		},
+		{
 			name: "ERROR: userRepository.FindByNameでErrorを返す場合",
 			args: args{
 				name: "name",
@@ -225,6 +251,19 @@ func Test_userService_ExistsEmail(t *testing.T) {
 				},
 			},
 			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "NORMAL: userがnilの場合",
+			args: args{
+				email: "email",
+			},
+			mocks: mocks{
+				FakeFindByEmail: func(email string) (*model.User, error) {
+					return nil, nil
+				},
+			},
+			want:    false,
 			wantErr: false,
 		},
 		{

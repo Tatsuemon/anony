@@ -70,9 +70,10 @@ func (u *userUseCase) VerifyByNameOrEmailPass(ctx context.Context, nameOrEmail, 
 }
 
 func (u *userUseCase) UpdateUser(ctx context.Context, user *model.User) (*model.User, error) {
-	// user.IDに目的のuserのIDが入っていることを期待する
-
-	// TODO(Tatsuemon): nameとemailの重複を避ける
+	// CheckDuplicatedUser をhandlerで実行する必要あり}
+	if err := user.ValidateUser(); err != nil {
+		return nil, err
+	}
 	_, err := u.transaction.DoInTx(ctx, func(ctx context.Context) (interface{}, error) {
 		if _, err := u.repo.FindByID(user.ID); err != nil {
 			return nil, err
@@ -90,6 +91,9 @@ func (u *userUseCase) DeleteUser(ctx context.Context, id string) error {
 		user, err := u.repo.FindByID(id)
 		if err != nil {
 			return nil, err
+		}
+		if user == nil {
+			return nil, nil
 		}
 		return nil, u.repo.Delete(ctx, user)
 	})
