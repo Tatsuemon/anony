@@ -13,12 +13,9 @@ goose-down-dev:
 	docker-compose run app goose down
 
 # Protobuf
-gen-proto-go:
+gen-proto:
 	cd proto && \
-		protoc -I. -I${GOPATH}/src *.proto --proto_path ../proto --go_out=plugins=grpc:../rpc --govalidators_out=paths=source_relative:../rpc;
-
-install-protoc-gen-govalidators:
-	GO111MODULE=off go get github.com/mwitkow/go-proto-validators/protoc-gen-govalidators;
+	protoc -I. -I${GOPATH}/src *.proto --proto_path ../proto --go_out=plugins=grpc:../rpc --govalidators_out=paths=source_relative:../rpc;
 
 # TEST
 build-test:
